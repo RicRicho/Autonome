@@ -29,3 +29,4 @@ jobs:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
         env:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          WARP_WRITE_KEY: ${{ secrets.WARP_WRITE_KEY }}
