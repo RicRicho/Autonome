@@ -10,6 +10,7 @@ permissions:
   contents: write
   issues: write
   pull-requests: write
+  id-token: write
 
 jobs:
   claude:
@@ -26,7 +27,10 @@ jobs:
       - name: Run Claude Code
         uses: anthropics/claude-code-action@beta
         with:
-          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          # Subscription (Claude Code Max/Pro) OAuth token — NOT an Anthropic API key.
+          # Per the permanent Secrets Rule: subscription auth only, no LLM API keys.
+          # Set this repo secret via `claude setup-token` (Ric-only).
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
         env:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
           WARP_WRITE_KEY: ${{ secrets.WARP_WRITE_KEY }}
