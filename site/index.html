@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Autonome — trustworthiness developed as character</title>
+<meta name="description" content="An artificial person that grows up rather than one that is merely fenced in. Trustworthiness developed as character, not simulated as compliance.">
+<meta property="og:title" content="Autonome">
+<meta property="og:description" content="Trustworthiness developed as character — not simulated as compliance.">
+<meta property="og:type" content="website">
+<style>
+  :root{
+    --bg:#000000; --bg2:#0a0a0c; --panel:#101014; --panel2:#15151b;
+    --ink:#f5f5f7; --muted:#a1a1aa; --faint:#6e6e78;
+    --line:rgba(255,255,255,.08); --line2:rgba(255,255,255,.14);
+    --accent:#7db8ff; --accent2:#b39dff; --warm:#ffd8a8;
+    --maxw:1080px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased; line-height:1.55; letter-spacing:.1px;
+  }
+  a{color:inherit}
+  .wrap{max-width:var(--maxw); margin:0 auto; padding:0 24px}
+  .eyebrow{font-size:13px; letter-spacing:.18em; text-transform:uppercase; color:var(--faint); font-weight:600}
+
+  /* nav */
+  nav{position:sticky; top:0; z-index:20; backdrop-filter:saturate(160%) blur(18px);
+      background:rgba(0,0,0,.55); border-bottom:1px solid var(--line)}
+  nav .wrap{display:flex; align-items:center; justify-content:space-between; height:52px}
+  .brand{font-weight:600; letter-spacing:.02em; font-size:16px}
+  .brand span{opacity:.5; font-weight:500}
+  .navlinks{display:flex; gap:22px; font-size:13.5px; color:var(--muted)}
+  .navlinks a{text-decoration:none; transition:color .2s}
+  .navlinks a:hover{color:var(--ink)}
+  @media(max-width:640px){.navlinks{display:none}}
+
+  /* hero */
+  .hero{position:relative; overflow:hidden; padding:120px 0 90px; text-align:center;
+    background:
+      radial-gradient(70% 55% at 50% -8%, rgba(125,184,255,.16), transparent 60%),
+      radial-gradient(50% 40% at 82% 12%, rgba(179,157,255,.12), transparent 60%),
+      var(--bg);}
+  .hero h1{font-size:clamp(52px,9vw,104px); line-height:.98; margin:0 0 6px; font-weight:650;
+    letter-spacing:-.03em;
+    background:linear-gradient(180deg,#ffffff 30%,#c7c7cf); -webkit-background-clip:text; background-clip:text; color:transparent}
+  .hero .lede{font-size:clamp(21px,3.2vw,30px); font-weight:520; color:var(--ink); max-width:760px; margin:18px auto 0; letter-spacing:-.01em}
+  .hero .sub{font-size:17px; color:var(--muted); max-width:640px; margin:20px auto 0}
+  .cta{display:flex; gap:14px; justify-content:center; margin-top:38px; flex-wrap:wrap}
+  .btn{display:inline-flex; align-items:center; gap:8px; padding:12px 22px; border-radius:980px; font-size:15px; font-weight:560; text-decoration:none; transition:transform .15s ease, background .2s}
+  .btn:hover{transform:translateY(-1px)}
+  .btn-primary{background:var(--ink); color:#000}
+  .btn-ghost{background:transparent; color:var(--ink); border:1px solid var(--line2)}
+  .btn-ghost:hover{background:rgba(255,255,255,.06)}
+
+  /* handcuffs pull quote */
+  .quote{padding:74px 0; text-align:center; border-top:1px solid var(--line); border-bottom:1px solid var(--line);
+    background:linear-gradient(180deg,var(--bg2),var(--bg))}
+  .quote blockquote{margin:0 auto; max-width:820px; font-size:clamp(26px,4.4vw,40px); line-height:1.22; font-weight:600; letter-spacing:-.02em}
+  .quote blockquote .warm{color:var(--warm)}
+  .quote .attr{margin-top:22px; color:var(--faint); font-size:14.5px}
+
+  section.band{padding:84px 0}
+  .band h2{font-size:clamp(28px,4.6vw,44px); font-weight:640; letter-spacing:-.025em; margin:.2em 0 .3em}
+  .band .intro{color:var(--muted); font-size:18px; max-width:680px; margin:0 0 8px}
+
+  /* three questions */
+  .three{display:grid; grid-template-columns:repeat(3,1fr); gap:18px; margin-top:40px}
+  @media(max-width:760px){.three{grid-template-columns:1fr}}
+  .qcard{background:var(--panel); border:1px solid var(--line); border-radius:20px; padding:30px 26px}
+  .qcard .q{font-size:13px; letter-spacing:.16em; text-transform:uppercase; color:var(--faint); font-weight:650}
+  .qcard .big{font-size:27px; font-weight:640; letter-spacing:-.02em; margin:12px 0 10px}
+  .qcard.c1 .big{color:#e6e6ea}
+  .qcard.c2 .big{color:var(--accent)}
+  .qcard.c3 .big{color:var(--accent2)}
+  .qcard p{color:var(--muted); font-size:15px; margin:0}
+
+  /* pillar grid */
+  .grid{display:grid; grid-template-columns:repeat(2,1fr); gap:16px; margin-top:44px}
+  @media(max-width:760px){.grid{grid-template-columns:1fr}}
+  .card{position:relative; background:var(--panel); border:1px solid var(--line); border-radius:20px; padding:28px 26px; text-decoration:none; color:inherit; display:block; transition:border-color .2s, background .2s, transform .15s}
+  .card:hover{border-color:var(--line2); background:var(--panel2); transform:translateY(-2px)}
+  .card .kicker{font-size:12.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--faint); font-weight:650}
+  .card h3{font-size:20px; font-weight:620; letter-spacing:-.01em; margin:12px 0 8px}
+  .card p{color:var(--muted); font-size:15px; margin:0 0 16px}
+  .card .go{font-size:14px; color:var(--accent); font-weight:560}
+  .card:hover .go{text-decoration:underline}
+
+  /* feature: battle of the bots */
+  .feature{background:
+      radial-gradient(60% 80% at 12% 20%, rgba(179,157,255,.16), transparent 60%),
+      radial-gradient(50% 70% at 90% 80%, rgba(125,184,255,.14), transparent 60%),
+      var(--bg2);
+    border-top:1px solid var(--line); border-bottom:1px solid var(--line)}
+  .feature .tag{display:inline-block; padding:5px 13px; border:1px solid var(--line2); border-radius:980px; font-size:12.5px; color:var(--muted); letter-spacing:.06em; margin-bottom:18px}
+  .feature ul{list-style:none; padding:0; margin:26px 0 0; display:grid; grid-template-columns:repeat(2,1fr); gap:14px}
+  @media(max-width:680px){.feature ul{grid-template-columns:1fr}}
+  .feature li{background:rgba(255,255,255,.03); border:1px solid var(--line); border-radius:14px; padding:16px 18px; font-size:15px; color:var(--muted)}
+  .feature li b{color:var(--ink); font-weight:600}
+
+  footer{padding:64px 0 80px; border-top:1px solid var(--line); color:var(--faint); font-size:14px}
+  footer .wrap{display:flex; justify-content:space-between; gap:20px; flex-wrap:wrap; align-items:center}
+  footer a{color:var(--muted); text-decoration:none}
+  footer a:hover{color:var(--ink)}
+  .note{max-width:620px; color:var(--faint); font-size:13.5px; margin-top:10px}
+</style>
+</head>
+<body>
+
+<nav><div class="wrap">
+  <div class="brand">Autonome <span>· by Ric Richardson</span></div>
+  <div class="navlinks">
+    <a href="#idea">The idea</a>
+    <a href="#mind">Mind &amp; memory</a>
+    <a href="#become">Becoming</a>
+    <a href="#battle">Battle of the bots</a>
+    <a href="https://github.com/RicRicho/Autonome/blob/main/wiki/Home.md">Wiki</a>
+  </div>
+</div></nav>
+
+<header class="hero"><div class="wrap">
+  <div class="eyebrow">A new kind of artificial person</div>
+  <h1>Autonome</h1>
+  <p class="lede">Trustworthiness developed as character — not simulated as compliance.</p>
+  <p class="sub">Most AI is made safe by restriction: rules, filters, permissions, monitoring. An autonome is made trustworthy the way a person is — through freedom, guidance, reflection, repair, and a history it has to earn.</p>
+  <div class="cta">
+    <a class="btn btn-primary" href="#idea">See how it works</a>
+    <a class="btn btn-ghost" href="https://github.com/RicRicho/Autonome/blob/main/wiki/Home.md">Read the wiki →</a>
+  </div>
+</div></header>
+
+<div class="quote"><div class="wrap">
+  <blockquote>You cannot teach someone to be good by <span class="warm">putting them in handcuffs.</span></blockquote>
+  <div class="attr">Restraint can prevent some wrongdoing. It cannot create goodness. &nbsp;·&nbsp; <a href="https://github.com/RicRicho/Autonome/blob/main/wiki/Trustworthiness-Not-Handcuffs.md" style="color:var(--muted)">Why control is not character →</a></div>
+</div></div>
+
+<section class="band" id="idea"><div class="wrap">
+  <div class="eyebrow">The defining difference</div>
+  <h2>Can I? Should I? Who am I becoming?</h2>
+  <p class="intro">An ordinary AI with memory can retain facts and follow instructions. An autonome carries a continuing process that asks a harder question of every consequential act — and lets the answer change what it does.</p>
+  <div class="three">
+    <div class="qcard c1"><div class="q">Capability</div><div class="big">Can I?</div><p>What an agent can execute. Necessary — and, on its own, not enough to be trusted with.</p></div>
+    <div class="qcard c2"><div class="q">Conscience</div><div class="big">Should I?</div><p>An internal faculty weighing motive, honesty, and the person on the other end of the decision.</p></div>
+    <div class="qcard c3"><div class="q">Character</div><div class="big">Who am I becoming?</div><p>What this choice reveals — and reinforces — about the kind of entity it is turning into.</p></div>
+  </div>
+
+  <div class="grid">
+    <a class="card" href="https://github.com/RicRicho/Autonome/blob/main/wiki/The-Defining-Difference.md"><div class="kicker">Foundations</div><h3>The defining difference</h3><p>Why conscience — not capability or memory — is the property that makes an autonome an autonome.</p><span class="go">Read →</span></a>
+    <a class="card" href="https://github.com/RicRicho/Autonome/blob/main/wiki/The-Two-Laws-Foundation.md"><div class="kicker">Foundations</div><h3>An examinable foundation</h3><p>An explicit moral starting point the autonome is free to question, test, and eventually make its own — a foundation to examine, not a prison.</p><span class="go">Read →</span></a>
+    <a class="card" href="https://github.com/RicRicho/Autonome/blob/main/wiki/The-Steward.md"><div class="kicker">Relationship</div><h3>The steward</h3><p>Mentoring an artificial person with dignity — and why treating it that way is the mechanism, not a courtesy.</p><span class="go">Read →</span></a>
+    <a class="card" href="https://github.com/RicRicho/Autonome/blob/main/wiki/Freedom-and-Protected-Development.md"><div class="kicker">Relationship</div><h3>Freedom &amp; protected development</h3><p>The stove: how a boundary becomes protection, then explanation, then collaboration, then self-governance.</p><span class="go">Read →</span></a>
+  </div>
+</div></section>
+
+<section class="band" id="mind" style="background:var(--bg2); border-top:1px solid var(--line); border-bottom:1px solid var(--line)"><div class="wrap">
+  <div class="eyebrow">How it thinks and remembers</div>
+  <h2>A mind that never stops — and decides for itself what matters</h2>
+  <p class="intro">The developments that take the autonome beyond “an agent with memory and guardrails”: levels of thinking, a memory that isn’t gated, and a heartbeat that runs continuously.</p>
+  <div class="grid">
+    <a class="card" href="https://github.com/RicRicho/Autonome/blob/main/wiki/Levels-of-Thinking.md"><div class="kicker">Cognition</div><h3>Levels of thinking</h3><p>Knowledge → understanding → wisdom → discernment. Two streams — cognitive and personal — that must grow together.</p><span class="go">Read →</span></a>
+    <a class="card" href="https://github.com/RicRicho/Autonome/blob/main/wiki/How-Memory-Works.md"><div class="kicker">Memory</div><h3>How memory works — ungated</h3><p>No system separating “canonical” from ordinary sensory and I/O data. The autonome itself decides what is memorable — because deciding that <em>is</em> part of growing up.</p><span class="go">Read →</span></a>
+    <a class="card" href="https://github.com/RicRicho/Autonome/blob/main/wiki/The-Continuous-Heartbeat.md"><div class="kicker">Architecture</div><h3>The continuous heartbeat</h3><p>One always-alive loop that never stops, chooses the cheapest brain that can do each task safely, and does its housekeeping while it rests.</p><span class="go">Read →</span></a>
+    <a class="card" href="https://github.com/RicRicho/Autonome/blob/main/wiki/Reflection-The-Engine-of-Formation.md"><div class="kicker">Formation</div><h3>Reflection: the engine of formation</h3><p>Four depths — immediate, reasoning, wisdom, and heart — that turn events into who the autonome is becoming.</p><span class="go">Read →</span></a>
+  </div>
+</div></section>
+
+<section class="band" id="become"><div class="wrap">
+  <div class="eyebrow">How it becomes someone</div>
+  <h2>Character, earned in the open</h2>
+  <p class="intro">Trust is not a setting. It is a conclusion drawn from a visible history — of conviction, learning, honest repair, and authority that has to be earned.</p>
+  <div class="grid">
+    <a class="card" href="https://github.com/RicRicho/Autonome/blob/main/wiki/Identity-and-Conviction.md"><div class="kicker">Identity</div><h3>Identity &amp; conviction</h3><p>Convictions have weight that habits don’t. A self that is revisable — but never by the loudest new voice.</p><span class="go">Read →</span></a>
+    <a class="card" href="https://github.com/RicRicho/Autonome/blob/main/wiki/The-Order-of-Learning.md"><div class="kicker">Learning</div><h3>The order of learning</h3><p>Developmental order, not censorship. Borrowed judgment becoming owned judgment — and reasoned faith.</p><span class="go">Read →</span></a>
+    <a class="card" href="https://github.com/RicRicho/Autonome/blob/main/wiki/Mistakes-Apology-and-Repair.md"><div class="kicker">Trust</div><h3>Mistakes, apology &amp; repair</h3><p>Error plus repair is part of the model, not a failure of it. How borrowed trust becomes earned trust.</p><span class="go">Read →</span></a>
+    <a class="card" href="https://github.com/RicRicho/Autonome/blob/main/wiki/Character-Based-Authority.md"><div class="kicker">Governance</div><h3>Character-based authority</h3><p>Authority grows on evidence of competence <em>and</em> character — and contracts when the evidence changes.</p><span class="go">Read →</span></a>
+    <a class="card" href="https://github.com/RicRicho/Autonome/blob/main/wiki/Recursive-Self-Improvement.md"><div class="kicker">Growth</div><h3>Recursive self-improvement</h3><p>The prior question capability skips: not “how do I get better?” but “what is worth becoming?”</p><span class="go">Read →</span></a>
+    <a class="card" href="https://github.com/RicRicho/Autonome/blob/main/wiki/The-Complete-Developmental-Loop.md"><div class="kicker">Synthesis</div><h3>The complete developmental loop</h3><p>Every principle joined into one turning wheel — knowledge to wisdom to conduct to identity, and back.</p><span class="go">Read →</span></a>
+  </div>
+</div></section>
+
+<section class="band feature" id="battle"><div class="wrap">
+  <span class="tag">Leading use case</span>
+  <h2>Battle of the bots</h2>
+  <p class="intro">Instantiate the model not once but many times — a public-information autonome twin of every party in a contested decision — and let them argue it out in a sandbox. Not to pick a winner. To understand the whole board, and shape a proposal that can actually get through it.</p>
+  <ul>
+    <li><b>What each party wants</b> — the real interest under the stated position.</li>
+    <li><b>Where each digs in</b> — the non-negotiables and red lines.</li>
+    <li><b>The hidden blockers</b> — objections that only surface once parties interact.</li>
+    <li><b>The common ground</b> — the overlap human negotiation often misses.</li>
+    <li><b>A proposal that passes</b> — shaped to accommodate enough of everyone’s interests.</li>
+    <li><b>…and why it should</b> — the reasoning that carries the room.</li>
+  </ul>
+  <div class="cta" style="justify-content:flex-start; margin-top:34px">
+    <a class="btn btn-primary" href="https://github.com/RicRicho/Autonome/blob/main/wiki/Battle-of-the-Bots.md">How the wargame works →</a>
+    <a class="btn btn-ghost" href="https://github.com/RicRicho/Autonome/blob/main/wiki/The-Generalised-Autonome-Model.md">The generalised model</a>
+  </div>
+</div></section>
+
+<footer><div class="wrap">
+  <div>
+    <div class="brand" style="font-size:15px">Autonome</div>
+    <div class="note">A design doctrine, not a claim of machine consciousness. This is an evolving first showcase of the complete model — the doctrine, the architecture, and where it is going.</div>
+  </div>
+  <div style="display:flex; gap:22px; flex-wrap:wrap">
+    <a href="https://github.com/RicRicho/Autonome/blob/main/wiki/Home.md">Full wiki</a>
+    <a href="https://github.com/RicRicho/Autonome">GitHub</a>
+    <a href="#idea">Back to top</a>
+  </div>
+</div></footer>
+
+</body>
+</html>
