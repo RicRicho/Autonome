@@ -45,7 +45,9 @@ There is a further reason each twin has to be built with real integrity, not jus
 
 ## Modelling a party without becoming it
 
-A faithful twin must sometimes represent a party that behaves harshly, selfishly, or even unethically — and when the evidence points that way it should, rather than flattering the record. But the twin **models that behaviour without adopting it.** Each autonome holds a high moral standard of its own, and that standard does not bend to the character it is portraying. This is precisely what keeps the analysis reliable: a twin that stays honest can be trusted to report an ugly position accurately, whereas a twin that had actually *become* self-interested could not be trusted to report anything at all.
+A faithful twin must sometimes represent a party with genuinely unsavoury characteristics — one that behaves harshly, selfishly, or even unethically. Those traits are never ignored or smoothed over: they are **recognised and taken fully into consideration**, so the twin models the party as it really is rather than flattering the record. But recognising a party's flaws is not the same as taking them on. The twin **models that behaviour without adopting it** — the flaws inform the *portrayal*; they **do not change the integrity of the autonome itself.** Each autonome holds a high moral standard of its own, and that standard does not bend to the character it is portraying.
+
+This is precisely what keeps the analysis reliable — and it is a point worth stating the other way round. If a twin let a party's unsavoury characteristics erode its own integrity, the output would become **less** reliable, not more: a twin that had actually *become* self-interested could not be trusted to report anything accurately. A twin that stays honest, by contrast, can be trusted to report even an ugly position faithfully. Integrity in the twin and fidelity to the party are not in tension — the first is exactly what makes the second usable.
 
 ## How the twins reach you
 
