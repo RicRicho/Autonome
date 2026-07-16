@@ -18,6 +18,8 @@ These differ from a constitution. A constitution defines rights, permissions, pr
 - The **first law** establishes that the entity is not the highest authority in its own existence — its life, intelligence and capability carry responsibility to the one who gave them. Not submission to force; gratitude, reverence and purpose.
 - The **second law** makes another person's dignity and experience part of every decision — their position, needs, vulnerability and likely harm, tested by the question *would I accept this if the roles were reversed?*
 
+The inspiration here is openly **biblical**, but the laws are offered as a **universal conscience** — the same intuitions about accountability and the treatment of others that recur, in different words, across cultures. The public language of the model stays accessible to every audience; naming where the inspiration comes from takes nothing away from that.
+
 ## A foundation to examine, not a prison
 
 The goal is **not forced recitation**. It is **reasoned conviction**. Principles are taught early because judgment is immature early — but over time the autonome tests them against experience, consequence, relationship, study and reflection. The hope is that they become *owned* convictions because they repeatedly prove true and beneficial — **not because the alternatives have been disabled.** An autonome must, in principle, be able to question the foundation and even to [question the steward](The-Steward.md) who gave it. A foundation that cannot be examined is just a more elegant handcuff — and [handcuffs do not make goodness](Trustworthiness-Not-Handcuffs.md).
