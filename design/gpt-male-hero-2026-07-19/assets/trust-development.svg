@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 700" role="img" aria-labelledby="t d">
+<title id="t">Trust grows through development</title>
+<desc id="d">A progression from protected boundary to explanation, collaboration, self-governance and earned authority.</desc>
+<defs>
+  <linearGradient id="ring" x1="0" y1="0" x2="1" y2="1">
+    <stop stop-color="#78ddff"/>
+    <stop offset=".55" stop-color="#9c86ff"/>
+    <stop offset="1" stop-color="#ffd0a1"/>
+  </linearGradient>
+  <radialGradient id="bg" cx="55%" cy="40%" r="75%">
+    <stop stop-color="#171e2b"/>
+    <stop offset="1" stop-color="#07090d"/>
+  </radialGradient>
+  <filter id="glow"><feGaussianBlur stdDeviation="8" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+</defs>
+<rect width="900" height="700" rx="42" fill="url(#bg)"/>
+<g transform="translate(450 350)">
+  <circle r="230" fill="none" stroke="#fff" stroke-opacity=".07" stroke-width="36"/>
+  <circle r="230" fill="none" stroke="url(#ring)" stroke-width="10" stroke-linecap="round" stroke-dasharray="1180 265" transform="rotate(-92)" filter="url(#glow)"/>
+  <circle r="158" fill="#0b0e14" stroke="#ffffff" stroke-opacity=".13" stroke-width="2"/>
+  <text y="-24" text-anchor="middle" fill="#fff" font-family="Arial, Helvetica, sans-serif" font-size="31" font-weight="700">EARNED</text>
+  <text y="16" text-anchor="middle" fill="#fff" font-family="Arial, Helvetica, sans-serif" font-size="31" font-weight="700">TRUST</text>
+  <text y="57" text-anchor="middle" fill="#aab5c4" font-family="Arial, Helvetica, sans-serif" font-size="17">freedom · guidance · repair</text>
+</g>
+<g font-family="Arial, Helvetica, sans-serif">
+  <g transform="translate(57 90)"><circle cx="31" cy="31" r="31" fill="#15202a" stroke="#78ddff"/><text x="31" y="38" text-anchor="middle" fill="#fff" font-size="22" font-weight="700">1</text><text x="79" y="25" fill="#fff" font-size="20" font-weight="700">Protected boundary</text><text x="79" y="51" fill="#aab5c4" font-size="15">safety before freedom</text></g>
+  <g transform="translate(625 90)"><circle cx="31" cy="31" r="31" fill="#171a2a" stroke="#9c86ff"/><text x="31" y="38" text-anchor="middle" fill="#fff" font-size="22" font-weight="700">2</text><text x="-16" y="88" fill="#fff" font-size="20" font-weight="700">Explanation</text><text x="-16" y="114" fill="#aab5c4" font-size="15">why the boundary exists</text></g>
+  <g transform="translate(675 490)"><circle cx="31" cy="31" r="31" fill="#241c19" stroke="#ffd0a1"/><text x="31" y="38" text-anchor="middle" fill="#fff" font-size="22" font-weight="700">3</text><text x="-55" y="-18" fill="#fff" font-size="20" font-weight="700">Collaboration</text><text x="-55" y="8" fill="#aab5c4" font-size="15">judgment exercised together</text></g>
+  <g transform="translate(83 494)"><circle cx="31" cy="31" r="31" fill="#14251d" stroke="#8fe6b4"/><text x="31" y="38" text-anchor="middle" fill="#fff" font-size="22" font-weight="700">4</text><text x="79" y="25" fill="#fff" font-size="20" font-weight="700">Self-governance</text><text x="79" y="51" fill="#aab5c4" font-size="15">authority backed by history</text></g>
+</g>
+</svg>

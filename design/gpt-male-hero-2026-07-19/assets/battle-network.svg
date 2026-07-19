@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 700" role="img" aria-labelledby="t d">
+<title id="t">Battle of the bots stakeholder network</title>
+<desc id="d">Four stakeholder autonomes connected through a negotiation sandbox to a shared proposal.</desc>
+<defs>
+  <radialGradient id="core" cx="50%" cy="42%" r="65%">
+    <stop offset="0" stop-color="#d9f8ff"/>
+    <stop offset=".35" stop-color="#7bdfff"/>
+    <stop offset=".72" stop-color="#6b52db"/>
+    <stop offset="1" stop-color="#101522"/>
+  </radialGradient>
+  <linearGradient id="line" x1="0" x2="1">
+    <stop stop-color="#6edfff" stop-opacity=".2"/>
+    <stop offset=".5" stop-color="#ffffff" stop-opacity=".75"/>
+    <stop offset="1" stop-color="#ae8cff" stop-opacity=".22"/>
+  </linearGradient>
+  <filter id="glow"><feGaussianBlur stdDeviation="10" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+</defs>
+<rect width="900" height="700" rx="42" fill="#07090d"/>
+<g opacity=".2" stroke="#ffffff" stroke-width="1">
+  <path d="M75 120H825M75 220H825M75 320H825M75 420H825M75 520H825M75 620H825"/>
+  <path d="M140 65V635M260 65V635M380 65V635M500 65V635M620 65V635M740 65V635"/>
+</g>
+<g fill="none" stroke="url(#line)" stroke-width="3" filter="url(#glow)">
+  <path d="M220 185C330 215 355 282 420 330"/>
+  <path d="M680 185C570 215 545 282 480 330"/>
+  <path d="M220 515C330 485 355 418 420 370"/>
+  <path d="M680 515C570 485 545 418 480 370"/>
+</g>
+<circle cx="450" cy="350" r="107" fill="url(#core)" stroke="#d9fbff" stroke-opacity=".42" stroke-width="2"/>
+<circle cx="450" cy="350" r="137" fill="none" stroke="#89e5ff" stroke-opacity=".15" stroke-width="2"/>
+<text x="450" y="337" text-anchor="middle" fill="#061018" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="700">SHARED</text>
+<text x="450" y="368" text-anchor="middle" fill="#061018" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="700">PROPOSAL</text>
+<g font-family="Arial, Helvetica, sans-serif">
+  <g transform="translate(118 118)">
+    <rect width="205" height="126" rx="24" fill="#11151d" stroke="#ffffff" stroke-opacity=".16"/>
+    <circle cx="38" cy="38" r="17" fill="#7bdfff"/>
+    <text x="69" y="44" fill="#fff" font-size="20" font-weight="700">Utility</text>
+    <text x="24" y="81" fill="#aeb8c6" font-size="15">capacity · risk · cost</text>
+    <text x="24" y="104" fill="#aeb8c6" font-size="15">continuity</text>
+  </g>
+  <g transform="translate(577 118)">
+    <rect width="205" height="126" rx="24" fill="#11151d" stroke="#ffffff" stroke-opacity=".16"/>
+    <circle cx="38" cy="38" r="17" fill="#aa8cff"/>
+    <text x="69" y="44" fill="#fff" font-size="20" font-weight="700">Tribunal</text>
+    <text x="24" y="81" fill="#aeb8c6" font-size="15">evidence · process</text>
+    <text x="24" y="104" fill="#aeb8c6" font-size="15">public interest</text>
+  </g>
+  <g transform="translate(118 456)">
+    <rect width="205" height="126" rx="24" fill="#11151d" stroke="#ffffff" stroke-opacity=".16"/>
+    <circle cx="38" cy="38" r="17" fill="#8fe6b4"/>
+    <text x="69" y="44" fill="#fff" font-size="20" font-weight="700">Government</text>
+    <text x="24" y="81" fill="#aeb8c6" font-size="15">policy · timing</text>
+    <text x="24" y="104" fill="#aeb8c6" font-size="15">accountability</text>
+  </g>
+  <g transform="translate(577 456)">
+    <rect width="205" height="126" rx="24" fill="#11151d" stroke="#ffffff" stroke-opacity=".16"/>
+    <circle cx="38" cy="38" r="17" fill="#ffd2a3"/>
+    <text x="69" y="44" fill="#fff" font-size="20" font-weight="700">Community</text>
+    <text x="24" y="81" fill="#aeb8c6" font-size="15">impact · trust</text>
+    <text x="24" y="104" fill="#aeb8c6" font-size="15">local knowledge</text>
+  </g>
+</g>
+</svg>

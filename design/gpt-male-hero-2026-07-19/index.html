@@ -1,0 +1,854 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Autonome — an artificial person that grows up</title>
+  <meta name="description" content="An autonome is an AI with a conscience and free will — made trustworthy the way a person is: through freedom, guidance, reflection, honest repair, and a history it has to earn. Not fenced in. Grown up.">
+  <meta name="theme-color" content="#030405">
+  <meta property="og:title" content="Autonome — an artificial person that grows up">
+  <meta property="og:description" content="Autonomous intelligence. Human purpose. Trust that is earned.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://autonome.ricricho.com/">
+  <meta property="og:image" content="assets/og-autonome.jpg">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <style>
+    :root {
+      --black: #030405;
+      --black-2: #080a0d;
+      --black-3: #0d1015;
+      --panel: #101318;
+      --panel-2: #151920;
+      --paper: #f4f3ef;
+      --paper-2: #ebe9e3;
+      --ink: #0b0d11;
+      --white: #f9fbff;
+      --soft-white: #dfe4eb;
+      --muted: #9ba4b1;
+      --muted-2: #6d7682;
+      --line: rgba(255,255,255,.13);
+      --line-soft: rgba(255,255,255,.08);
+      --line-dark: rgba(10,13,17,.13);
+      --blue: #7adfff;
+      --blue-soft: #caf4ff;
+      --violet: #a38aff;
+      --green: #94e7b7;
+      --amber: #ffd1a4;
+      --radius: 22px;
+      --radius-lg: 32px;
+      --max: 1440px;
+      --ease: cubic-bezier(.22,.8,.2,1);
+      color-scheme: dark;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; background: var(--black); }
+    body {
+      margin: 0;
+      min-width: 320px;
+      overflow-x: hidden;
+      background: var(--black);
+      color: var(--white);
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Helvetica, Arial, sans-serif;
+      font-size: 16px;
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: geometricPrecision;
+    }
+    body.menu-open { overflow: hidden; }
+    img { display: block; max-width: 100%; }
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; }
+    :focus-visible { outline: 2px solid var(--blue); outline-offset: 4px; }
+    ::selection { background: rgba(122,223,255,.26); color: #fff; }
+
+    .skip-link {
+      position: fixed; z-index: 9999; top: 12px; left: 12px; padding: 10px 14px;
+      border-radius: 999px; background: #fff; color: #000; font-weight: 700;
+      transform: translateY(-180%); transition: transform .2s ease;
+    }
+    .skip-link:focus { transform: translateY(0); }
+
+    .shell { width: min(calc(100% - 80px), var(--max)); margin-inline: auto; }
+    .section { position: relative; overflow: clip; }
+    .section-pad { padding: clamp(96px, 10vw, 160px) 0; }
+    .eyebrow {
+      margin: 0 0 22px; color: #9ba4b1; font-size: 11px; font-weight: 750;
+      line-height: 1; letter-spacing: .14em; text-transform: uppercase;
+    }
+    .eyebrow.blue { color: var(--blue-soft); }
+    .display {
+      margin: 0; max-width: 920px; font-size: clamp(60px, 6.25vw, 104px);
+      font-weight: 420; line-height: .97; letter-spacing: -.058em;
+    }
+    .section-title {
+      margin: 0; font-size: clamp(44px, 5.2vw, 82px); font-weight: 430;
+      line-height: .99; letter-spacing: -.054em;
+    }
+    .lead {
+      margin: 27px 0 0; max-width: 720px; color: #b5bdc8;
+      font-size: clamp(18px, 1.55vw, 23px); line-height: 1.46; letter-spacing: -.018em;
+    }
+    .light { background: var(--paper); color: var(--ink); color-scheme: light; }
+    .light .lead { color: #535a65; }
+    .muted-line { color: #8d8f95; }
+    .arrow { display: inline-block; transition: transform .22s var(--ease); }
+    a:hover .arrow { transform: translateX(4px); }
+
+    .btn-row { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; margin-top: 34px; }
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+      min-height: 47px; padding: 0 20px; border: 1px solid transparent; border-radius: 999px;
+      font-size: 13px; font-weight: 720; letter-spacing: -.012em;
+      transition: transform .24s var(--ease), background .24s ease, border-color .24s ease, color .24s ease;
+    }
+    .btn:hover { transform: translateY(-2px); }
+    .btn-primary { background: #fff; color: #050607; box-shadow: 0 18px 50px rgba(0,0,0,.34); }
+    .btn-primary:hover { background: #dff7ff; }
+    .btn-ghost { border-color: rgba(255,255,255,.16); background: rgba(255,255,255,.035); color: #fff; }
+    .btn-ghost:hover { border-color: rgba(255,255,255,.35); background: rgba(255,255,255,.07); }
+    .btn-link { padding-inline: 0; color: #e9eef4; }
+    .light .btn-link { color: #11141a; }
+
+    /* Header */
+    .site-header {
+      position: fixed; z-index: 1000; top: 0; left: 0; right: 0; height: 72px;
+      border-bottom: 1px solid transparent;
+      transition: background .3s ease, border-color .3s ease, backdrop-filter .3s ease;
+    }
+    .site-header.scrolled {
+      background: rgba(3,4,5,.95); border-color: rgba(255,255,255,.075);
+      backdrop-filter: blur(22px) saturate(135%); -webkit-backdrop-filter: blur(22px) saturate(135%);
+    }
+    .nav-shell { height: 100%; display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 34px; }
+    .brand { display: inline-flex; align-items: center; gap: 10px; min-width: max-content; }
+    .brand-mark { width: 27px; height: 27px; }
+    .brand-name { font-size: 16px; font-weight: 690; letter-spacing: -.026em; }
+    .brand-by { margin-left: 2px; color: #89919d; font-size: 11px; font-weight: 550; }
+    .desktop-nav { display: flex; align-items: center; justify-content: center; gap: clamp(20px, 2.5vw, 39px); }
+    .desktop-nav a { position: relative; color: #c3c9d1; font-size: 12px; font-weight: 630; }
+    .desktop-nav a::after {
+      content: ""; position: absolute; left: 0; right: 100%; bottom: -8px; height: 1px; background: #fff;
+      transition: right .24s var(--ease);
+    }
+    .desktop-nav a:hover, .desktop-nav a.active { color: #fff; }
+    .desktop-nav a:hover::after, .desktop-nav a.active::after { right: 0; }
+    .nav-cta { min-height: 36px; padding-inline: 16px; font-size: 11px; }
+    .menu-toggle {
+      display: none; width: 42px; height: 42px; border: 1px solid rgba(255,255,255,.16); border-radius: 50%;
+      background: rgba(255,255,255,.05); color: #fff; cursor: pointer; align-items: center; justify-content: center;
+    }
+    .menu-toggle span, .menu-toggle span::before, .menu-toggle span::after {
+      display: block; width: 18px; height: 1.5px; background: currentColor; transition: transform .25s ease, opacity .25s ease;
+    }
+    .menu-toggle span { position: relative; }
+    .menu-toggle span::before, .menu-toggle span::after { content: ""; position: absolute; left: 0; }
+    .menu-toggle span::before { top: -6px; }
+    .menu-toggle span::after { top: 6px; }
+    .menu-open .menu-toggle span { background: transparent; }
+    .menu-open .menu-toggle span::before { transform: translateY(6px) rotate(45deg); }
+    .menu-open .menu-toggle span::after { transform: translateY(-6px) rotate(-45deg); }
+    .mobile-panel {
+      position: fixed; z-index: 900; inset: 0; display: grid; align-content: center; padding: 96px 28px 32px;
+      background: rgba(3,4,5,.98); opacity: 0; visibility: hidden; transition: opacity .28s ease, visibility .28s ease;
+    }
+    .menu-open .mobile-panel { opacity: 1; visibility: visible; }
+    .mobile-panel nav { display: grid; gap: 8px; }
+    .mobile-panel nav a { padding: 10px 0; font-size: clamp(30px, 8vw, 46px); line-height: 1; letter-spacing: -.045em; }
+    .mobile-panel .btn { width: max-content; margin-top: 26px; }
+
+    /* Hero */
+    .hero {
+      min-height: 940px; padding: 126px 0 42px; background: #030405;
+      display: flex; align-items: flex-end; isolation: isolate;
+    }
+    .hero::before {
+      content: ""; position: absolute; inset: 0; z-index: -3;
+      background: url("assets/hero-male.webp") center top / cover no-repeat;
+    }
+    .hero::after {
+      content: ""; position: absolute; inset: 0; z-index: -2; pointer-events: none;
+      background:
+        linear-gradient(90deg, #030405 0%, rgba(3,4,5,.98) 28%, rgba(3,4,5,.72) 49%, rgba(3,4,5,.05) 75%),
+        linear-gradient(180deg, rgba(3,4,5,.08) 0%, rgba(3,4,5,0) 52%, #030405 100%);
+    }
+    .hero-shell { position: relative; width: min(calc(100% - 80px), var(--max)); margin-inline: auto; }
+    .hero-copy { max-width: 760px; padding-bottom: 54px; }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px; margin-bottom: 26px; padding: 7px 11px;
+      border: 1px solid rgba(122,223,255,.23); border-radius: 999px; background: rgba(50,140,190,.045);
+      color: #aeeaff; font-size: 10px; font-weight: 750; letter-spacing: .04em;
+      box-shadow: inset 0 0 20px rgba(94,205,255,.04), 0 0 28px rgba(73,177,235,.06);
+    }
+    .hero-badge::before { content: ""; width: 5px; height: 5px; border-radius: 50%; background: var(--blue); box-shadow: 0 0 11px var(--blue); }
+    .hero .display { max-width: 700px; }
+    .hero .lead { max-width: 620px; margin-top: 27px; color: #d1d6dd; font-size: clamp(16px, 1.35vw, 20px); }
+    .hero-rail {
+      display: grid; grid-template-columns: repeat(4,1fr); overflow: hidden;
+      border: 1px solid rgba(255,255,255,.16); border-radius: 13px;
+      background: rgba(4,5,7,.70); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+      box-shadow: 0 28px 80px rgba(0,0,0,.34);
+    }
+    .hero-principle { min-height: 150px; padding: 24px 26px; border-right: 1px solid rgba(255,255,255,.11); }
+    .hero-principle:last-child { border-right: 0; }
+    .hero-principle svg { width: 25px; height: 25px; margin-bottom: 17px; color: #f6f8fb; }
+    .hero-principle h3 { margin: 0 0 8px; font-size: 21px; font-weight: 480; line-height: 1.05; letter-spacing: -.035em; }
+    .hero-principle p { margin: 0; max-width: 245px; color: #a6aeba; font-size: 12px; line-height: 1.43; }
+
+    /* Difference split */
+    .difference { background: var(--paper); color: var(--ink); color-scheme: light; }
+    .difference-grid { display: grid; grid-template-columns: minmax(380px, .78fr) minmax(0, 1.22fr); min-height: 720px; }
+    .difference-copy { padding: 72px max(42px, calc((100vw - var(--max))/2 + 40px)) 60px max(42px, calc((100vw - var(--max))/2)); }
+    .difference-copy .eyebrow { color: #6e747c; }
+    .difference-copy .section-title { max-width: 520px; font-size: clamp(48px, 4.7vw, 76px); }
+    .difference-copy .lead { margin-top: 22px; max-width: 540px; color: #5b616a; font-size: clamp(16px, 1.3vw, 20px); }
+    .difference-list { margin-top: 38px; border-top: 1px solid var(--line-dark); }
+    .difference-row {
+      display: grid; grid-template-columns: 42px 1fr auto; align-items: center; gap: 14px;
+      padding: 16px 0; border-bottom: 1px solid var(--line-dark);
+    }
+    .difference-icon {
+      width: 34px; height: 34px; display: grid; place-items: center; border-radius: 11px;
+      background: rgba(10,13,17,.055); color: #101319;
+    }
+    .difference-icon svg { width: 18px; height: 18px; }
+    .difference-row h3 { margin: 0; font-size: 15px; line-height: 1.2; letter-spacing: -.02em; }
+    .difference-row h3 small { display: block; margin-top: 4px; color: #737a84; font-size: 11px; font-weight: 550; letter-spacing: 0; }
+    .difference-row p { grid-column: 2 / -1; margin: -4px 0 0; color: #555c66; font-size: 13px; line-height: 1.45; }
+    .difference-arrow { font-size: 22px; line-height: 1; }
+    .difference-visual { position: relative; min-height: 720px; overflow: hidden; background: #d9e3ed; }
+    .difference-visual > img { width: 100%; height: 100%; object-fit: cover; }
+    .laptop-badge {
+      position: absolute; left: 54.1%; top: 54.1%; width: 86px; height: 86px; border-radius: 50%;
+      display: grid; place-items: center; transform: translate(-50%,-50%);
+      background: rgba(27,33,43,.95); border: 1px solid rgba(255,255,255,.11); box-shadow: 0 8px 20px rgba(0,0,0,.18);
+    }
+    .laptop-badge img { width: 39px; height: 39px; }
+    .visual-note {
+      position: absolute; left: 28px; bottom: 26px; max-width: 310px; padding: 15px 17px;
+      border: 1px solid rgba(255,255,255,.23); border-radius: 14px; background: rgba(10,14,19,.46);
+      color: #f6f8fb; font-size: 12px; line-height: 1.45; backdrop-filter: blur(14px);
+    }
+
+    /* Autonomes */
+    .autonomes-section { background: linear-gradient(180deg,#06080a,#030405 78%); }
+    .autonomes-layout { display: grid; grid-template-columns: minmax(240px,.42fr) minmax(0,1.58fr); gap: 40px; align-items: start; }
+    .autonomes-intro { padding-top: 8px; }
+    .autonomes-intro .section-title { max-width: 350px; font-size: clamp(44px, 4.3vw, 68px); }
+    .autonomes-intro .lead { margin-top: 21px; max-width: 360px; color: #bcc4ce; font-size: 16px; }
+    .autonome-cards { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 14px; }
+    .autonome-card {
+      position: relative; min-width: 0; overflow: hidden; border: 1px solid rgba(255,255,255,.11);
+      border-radius: 15px; background: linear-gradient(180deg,#111419,#0a0c10); box-shadow: 0 24px 60px rgba(0,0,0,.18);
+      transition: transform .34s var(--ease), border-color .34s ease;
+    }
+    .autonome-card:hover { transform: translateY(-7px); border-color: rgba(122,223,255,.32); }
+    .card-art { aspect-ratio: 1.29/1; overflow: hidden; background: #101318; }
+    .card-art img { width: 100%; height: 100%; object-fit: cover; transform: scale(1.02); }
+    .autonome-card-body { min-height: 270px; padding: 18px 17px 20px; display: flex; flex-direction: column; }
+    .status { margin: 0 0 12px; color: #8f99a6; font-size: 9px; font-weight: 760; letter-spacing: .13em; text-transform: uppercase; }
+    .status.live { color: #a9efff; }
+    .autonome-card h3 { margin: 0; font-size: 18px; font-weight: 650; letter-spacing: -.026em; }
+    .autonome-role { margin: 3px 0 13px; color: #adb5c0; font-size: 11px; }
+    .autonome-card p { margin: 0; color: #c5cbd3; font-size: 12px; line-height: 1.48; }
+    .card-arrow {
+      width: 29px; height: 29px; margin-top: auto; align-self: flex-end; display: grid; place-items: center;
+      border: 1px solid rgba(255,255,255,.18); border-radius: 50%; color: #fff; font-size: 16px;
+    }
+    .autonomes-note {
+      grid-column: 2; margin: 22px 0 0; padding-top: 20px; border-top: 1px solid rgba(255,255,255,.1);
+      color: #929ba7; font-size: 13px; line-height: 1.55;
+    }
+    .autonomes-note a { color: #fff; font-weight: 650; }
+
+    /* Quote band */
+    .founder-band { background: linear-gradient(90deg,#111317,#090b0e 60%,#111317); border-top: 1px solid rgba(255,255,255,.08); border-bottom: 1px solid rgba(255,255,255,.08); }
+    .founder-shell { display: grid; grid-template-columns: minmax(0,1.35fr) minmax(300px,.65fr); gap: 70px; align-items: center; min-height: 190px; }
+    .founder-quote { display: grid; grid-template-columns: auto 1fr; gap: 22px; align-items: start; }
+    .quote-mark { margin-top: -4px; color: #fff; font-family: Georgia,serif; font-size: 72px; line-height: .75; }
+    .founder-quote blockquote { margin: 0; max-width: 760px; font-size: clamp(23px,2.25vw,34px); line-height: 1.15; letter-spacing: -.035em; }
+    .founder-card { display: flex; align-items: center; gap: 16px; }
+    .rr-avatar {
+      width: 68px; height: 68px; flex: 0 0 auto; display: grid; place-items: center; border-radius: 50%;
+      background: radial-gradient(circle at 35% 28%,#c9f2ff,#4d647b 45%,#151a22 72%); color: #05070a;
+      font-size: 20px; font-weight: 820; box-shadow: inset 0 0 0 1px rgba(255,255,255,.2);
+    }
+    .founder-card h3 { margin: 0; font-size: 15px; }
+    .founder-card p { margin: 2px 0 8px; color: #9fa8b3; font-size: 12px; }
+    .founder-card a { color: #fff; font-size: 12px; font-weight: 650; }
+
+    /* Trust */
+    .trust-section { background: #050608; }
+    .trust-header { max-width: 1160px; }
+    .trust-header .section-title { max-width: 1110px; }
+    .trust-grid { display: grid; grid-template-columns: minmax(0,.92fr) minmax(420px,1.08fr); gap: clamp(48px,7vw,110px); align-items: center; margin-top: 70px; }
+    .trust-copy .lead { margin-top: 0; max-width: 610px; color: #c1c8d1; }
+    .trust-copy .lead + .lead { margin-top: 22px; }
+    .trust-copy .btn-row { margin-top: 29px; }
+    .trust-visual img { width: 100%; border-radius: 30px; border: 1px solid rgba(255,255,255,.09); box-shadow: 0 34px 100px rgba(0,0,0,.34); }
+    .trust-cards { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; margin-top: 48px; }
+    .trust-card {
+      min-height: 250px; padding: 27px 26px; border: 1px solid rgba(255,255,255,.11); border-radius: 20px;
+      background: linear-gradient(145deg,rgba(255,255,255,.055),rgba(255,255,255,.015));
+    }
+    .trust-num { color: #9ee9ff; font-size: 11px; font-weight: 760; letter-spacing: .12em; }
+    .trust-card h3 { margin: 34px 0 13px; font-size: 24px; line-height: 1.08; letter-spacing: -.035em; }
+    .trust-card p { margin: 0; color: #aeb7c2; font-size: 14px; line-height: 1.55; }
+
+    /* Thinking */
+    .thinking-section { background: var(--paper); color: var(--ink); color-scheme: light; }
+    .thinking-head { display: grid; grid-template-columns: minmax(0,1fr) minmax(300px,.56fr); gap: 52px; align-items: end; }
+    .thinking-head .lead { color: #555c66; font-size: 18px; }
+    .thinking-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; margin-top: 62px; }
+    .thinking-card {
+      min-height: 325px; padding: 29px 28px 26px; display: flex; flex-direction: column;
+      border: 1px solid rgba(12,15,20,.11); border-radius: 22px; background: rgba(255,255,255,.72);
+      box-shadow: 0 20px 48px rgba(15,20,28,.05); transition: transform .3s var(--ease), box-shadow .3s ease;
+    }
+    .thinking-card:hover { transform: translateY(-6px); box-shadow: 0 30px 70px rgba(15,20,28,.1); }
+    .thinking-card:nth-child(2) { background: linear-gradient(145deg,#fff,#edf8fb); }
+    .thinking-card:nth-child(3) { background: linear-gradient(145deg,#fff,#f0eeff); }
+    .thinking-card:nth-child(4) { background: linear-gradient(145deg,#fff,#fff0e4); }
+    .thinking-card:nth-child(5) { background: linear-gradient(145deg,#fff,#edf8f1); }
+    .thinking-card:nth-child(6) { background: linear-gradient(145deg,#fff,#eff2f7); }
+    .thinking-meta { display: flex; align-items: center; justify-content: space-between; color: #6f7782; font-size: 10px; font-weight: 760; letter-spacing: .12em; text-transform: uppercase; }
+    .thinking-icon { width: 42px; height: 42px; display: grid; place-items: center; border: 1px solid rgba(10,13,17,.12); border-radius: 13px; background: rgba(255,255,255,.68); }
+    .thinking-icon svg { width: 21px; height: 21px; }
+    .thinking-card h3 { margin: 36px 0 15px; font-size: 31px; line-height: 1.02; letter-spacing: -.045em; }
+    .thinking-card p { margin: 0; color: #515862; font-size: 15px; line-height: 1.55; }
+    .thinking-card a { margin-top: auto; padding-top: 24px; font-size: 13px; font-weight: 730; }
+
+    /* Battle */
+    .battle-section { background: linear-gradient(180deg,#07090c,#030405); }
+    .battle-top { display: grid; grid-template-columns: minmax(0,.86fr) minmax(420px,1.14fr); gap: clamp(52px,8vw,120px); align-items: center; }
+    .battle-copy .section-title { max-width: 650px; }
+    .battle-copy .lead { max-width: 660px; font-size: 18px; }
+    .battle-visual img { width: 100%; border: 1px solid rgba(255,255,255,.1); border-radius: 30px; box-shadow: 0 32px 90px rgba(0,0,0,.38); }
+    .battle-points { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; margin-top: 44px; }
+    .battle-point { padding: 22px 21px; border: 1px solid rgba(255,255,255,.1); border-radius: 17px; background: rgba(255,255,255,.025); }
+    .battle-point h3 { margin: 0 0 8px; font-size: 17px; letter-spacing: -.025em; }
+    .battle-point p { margin: 0; color: #9da7b4; font-size: 12px; line-height: 1.45; }
+    .worked-example {
+      display: grid; grid-template-columns: minmax(190px,.28fr) 1fr; gap: 34px; align-items: start;
+      margin-top: 26px; padding: 30px 32px; border: 1px solid rgba(255,255,255,.11); border-radius: 22px;
+      background: linear-gradient(120deg,rgba(122,223,255,.06),rgba(163,138,255,.035),rgba(255,209,164,.03));
+    }
+    .worked-example h3 { margin: 0; font-size: 27px; line-height: 1.05; letter-spacing: -.04em; }
+    .worked-example p { margin: 0; color: #bdc5cf; font-size: 15px; line-height: 1.58; }
+
+    /* Final */
+    .final-cta { background: var(--paper); color: var(--ink); color-scheme: light; }
+    .final-shell { display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 50px; align-items: end; padding: clamp(90px,10vw,150px) 0; }
+    .final-shell .section-title { max-width: 1050px; }
+    .final-copy { max-width: 820px; }
+    .final-copy p { margin: 23px 0 0; color: #59606a; font-size: 18px; }
+    .final-actions { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; }
+    .final-actions .btn-primary { background: #080a0d; color: #fff; }
+    .final-actions .btn-primary:hover { background: #18222c; }
+    .final-actions .btn-ghost { border-color: rgba(10,13,17,.16); color: #111; background: rgba(255,255,255,.52); }
+
+    /* Footer */
+    .site-footer { background: #030405; border-top: 1px solid rgba(255,255,255,.08); }
+    .footer-main { display: grid; grid-template-columns: 1.05fr .6fr .6fr .8fr; gap: 44px; padding: 58px 0 50px; }
+    .footer-brand p { max-width: 330px; margin: 15px 0 0; color: #8f98a4; font-size: 12px; line-height: 1.55; }
+    .footer-col h3 { margin: 0 0 17px; color: #e7ebf1; font-size: 11px; font-weight: 760; letter-spacing: .08em; text-transform: uppercase; }
+    .footer-col a { display: block; width: max-content; margin: 9px 0; color: #a6aeb9; font-size: 12px; }
+    .footer-col a:hover { color: #fff; }
+    .footer-bottom { display: flex; align-items: center; justify-content: space-between; gap: 30px; padding: 19px 0 26px; border-top: 1px solid rgba(255,255,255,.07); color: #737c88; font-size: 11px; }
+    .footer-bottom nav { display: flex; gap: 24px; }
+
+    /* Reveal */
+    [data-reveal] { opacity: 0; transform: translateY(24px); transition: opacity .7s var(--ease), transform .7s var(--ease); }
+    [data-reveal].visible { opacity: 1; transform: translateY(0); }
+
+    @media (max-width: 1160px) {
+      .shell, .hero-shell { width: min(calc(100% - 48px), var(--max)); }
+      .brand-by { display: none; }
+      .desktop-nav { gap: 20px; }
+      .hero { min-height: 900px; }
+      .hero::before { background-position: 58% top; }
+      .difference-grid { grid-template-columns: .9fr 1.1fr; }
+      .difference-copy { padding-left: 34px; padding-right: 34px; }
+      .autonomes-layout { grid-template-columns: 1fr; }
+      .autonomes-intro { display: grid; grid-template-columns: .65fr 1fr; gap: 40px; align-items: end; }
+      .autonomes-intro .lead { max-width: 650px; }
+      .autonomes-note { grid-column: 1; }
+      .founder-shell { gap: 36px; }
+      .trust-grid, .battle-top { grid-template-columns: 1fr 1fr; gap: 46px; }
+      .thinking-grid { grid-template-columns: repeat(2,1fr); }
+    }
+
+    @media (max-width: 900px) {
+      .site-header { height: 68px; }
+      .nav-shell { grid-template-columns: 1fr auto; }
+      .desktop-nav, .nav-cta { display: none; }
+      .menu-toggle { display: inline-flex; }
+      .hero { min-height: 880px; padding-top: 105px; }
+      .hero::before { background-position: 61% 10%; background-size: auto 820px; opacity: .76; }
+      .hero::after {
+        background:
+          linear-gradient(90deg,#030405 0%,rgba(3,4,5,.93) 44%,rgba(3,4,5,.35) 77%),
+          linear-gradient(180deg,rgba(3,4,5,.05),rgba(3,4,5,.18) 44%,#030405 77%);
+      }
+      .hero-copy { max-width: 600px; padding-bottom: 44px; }
+      .hero-rail { grid-template-columns: repeat(2,1fr); }
+      .hero-principle:nth-child(2) { border-right: 0; }
+      .hero-principle:nth-child(-n+2) { border-bottom: 1px solid rgba(255,255,255,.11); }
+      .difference-grid { grid-template-columns: 1fr; }
+      .difference-copy { padding: 82px 32px 60px; }
+      .difference-visual { min-height: 560px; }
+      .autonome-cards { grid-template-columns: repeat(2,1fr); }
+      .founder-shell { grid-template-columns: 1fr; padding: 38px 0; min-height: 0; }
+      .trust-grid, .battle-top { grid-template-columns: 1fr; }
+      .trust-visual, .battle-visual { max-width: 720px; }
+      .trust-cards { grid-template-columns: 1fr; }
+      .thinking-head { grid-template-columns: 1fr; gap: 20px; }
+      .battle-points { grid-template-columns: repeat(2,1fr); }
+      .worked-example { grid-template-columns: 1fr; }
+      .final-shell { grid-template-columns: 1fr; align-items: start; }
+      .footer-main { grid-template-columns: 1fr 1fr; }
+    }
+
+    @media (max-width: 620px) {
+      .shell, .hero-shell { width: min(calc(100% - 32px), var(--max)); }
+      .section-pad { padding: 88px 0; }
+      .display { font-size: clamp(52px,15vw,74px); }
+      .section-title { font-size: clamp(42px,12vw,62px); }
+      .hero { min-height: 820px; padding-top: 92px; }
+      .hero::before { background-position: 68% 4%; background-size: auto 690px; opacity: .65; }
+      .hero::after {
+        background:
+          linear-gradient(90deg,#030405 0%,rgba(3,4,5,.9) 51%,rgba(3,4,5,.32) 88%),
+          linear-gradient(180deg,rgba(3,4,5,.04),rgba(3,4,5,.22) 40%,#030405 68%);
+      }
+      .hero-badge { margin-bottom: 19px; }
+      .hero .lead { max-width: 480px; font-size: 15px; }
+      .btn-row { gap: 8px; }
+      .btn { min-height: 44px; padding: 0 16px; }
+      .hero-rail { margin-inline: -1px; }
+      .hero-principle { min-height: 142px; padding: 20px 18px; }
+      .hero-principle h3 { font-size: 17px; }
+      .hero-principle p { font-size: 11px; }
+      .difference-copy { padding: 75px 22px 54px; }
+      .difference-visual { min-height: 430px; }
+      .laptop-badge { width: 58px; height: 58px; }
+      .laptop-badge img { width: 31px; height: 31px; }
+      .visual-note { left: 16px; right: 16px; bottom: 16px; max-width: none; }
+      .autonomes-intro { grid-template-columns: 1fr; gap: 12px; }
+      .autonome-cards { display: flex; gap: 12px; overflow-x: auto; margin-right: -16px; padding: 0 16px 18px 0; scroll-snap-type: x mandatory; }
+      .autonome-card { flex: 0 0 82vw; scroll-snap-align: start; }
+      .autonomes-note { margin-top: 12px; }
+      .founder-quote { grid-template-columns: 34px 1fr; gap: 12px; }
+      .quote-mark { font-size: 52px; }
+      .founder-card { padding-left: 46px; }
+      .trust-cards { gap: 10px; }
+      .trust-card { min-height: 0; }
+      .thinking-grid { grid-template-columns: 1fr; }
+      .thinking-card { min-height: 300px; }
+      .battle-points { grid-template-columns: 1fr; }
+      .worked-example { padding: 24px 22px; }
+      .final-actions { width: 100%; }
+      .final-actions .btn { width: 100%; }
+      .footer-main { grid-template-columns: 1fr; gap: 28px; }
+      .footer-bottom { align-items: flex-start; flex-direction: column; }
+      .footer-bottom nav { flex-wrap: wrap; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; }
+      [data-reveal] { opacity: 1; transform: none; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header" id="site-header">
+    <div class="shell nav-shell">
+      <a class="brand" href="#top" aria-label="Autonome home">
+        <img class="brand-mark" src="assets/autonome-mark.svg" alt="">
+        <span class="brand-name">Autonome</span>
+        <span class="brand-by">· by Ric Richardson</span>
+      </a>
+      <nav class="desktop-nav" aria-label="Primary navigation">
+        <a href="#overview">Overview</a>
+        <a href="#autonomes">The autonomes</a>
+        <a href="#how-it-works">How it works</a>
+        <a href="#battle-of-the-bots">Battle of the bots</a>
+        <a href="https://github.com/RicRicho/Autonome/blob/main/wiki/Home.md">Wiki</a>
+      </nav>
+      <a class="btn btn-primary nav-cta" href="#autonomes">Meet an autonome</a>
+      <button class="menu-toggle" type="button" aria-label="Open menu" aria-expanded="false"><span></span></button>
+    </div>
+  </header>
+
+  <div class="mobile-panel" aria-hidden="true">
+    <nav aria-label="Mobile navigation">
+      <a href="#overview">Overview</a>
+      <a href="#autonomes">The autonomes</a>
+      <a href="#how-it-works">How it works</a>
+      <a href="#battle-of-the-bots">Battle of the bots</a>
+      <a href="https://github.com/RicRicho/Autonome/blob/main/wiki/Home.md">Wiki</a>
+    </nav>
+    <a class="btn btn-primary" href="#autonomes">Meet an autonome <span class="arrow">→</span></a>
+  </div>
+
+  <main id="main">
+    <section class="hero section" id="top" aria-labelledby="hero-title">
+      <div class="hero-shell">
+        <div class="hero-copy" data-reveal>
+          <div class="hero-badge">The Autonome platform</div>
+          <h1 class="display" id="hero-title">
+            Autonomous intelligence.<br>
+            <span class="muted-line">Human purpose.</span><br>
+            Trust that is earned.
+          </h1>
+          <p class="lead">An autonome is an AI with a conscience and free will — made trustworthy the way a person is: through freedom, guidance, reflection, honest repair, and a history it has to earn. Not fenced in. Grown up.</p>
+          <div class="btn-row">
+            <a class="btn btn-primary" href="#how-it-works">See how it works</a>
+            <a class="btn btn-link" href="#autonomes">Meet the autonomes <span class="arrow">→</span></a>
+          </div>
+        </div>
+
+        <div class="hero-rail" id="overview" data-reveal>
+          <article class="hero-principle">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M12 3.2c-3.5 0-6.3 2.6-6.3 5.8 0 2.2 1.2 3.8 2.6 5.2.9.9 1.5 1.8 1.6 3.1h4.2c.1-1.3.7-2.2 1.6-3.1 1.4-1.4 2.6-3 2.6-5.2 0-3.2-2.8-5.8-6.3-5.8Z"/><path d="M9.8 20h4.4M10.4 17.3h3.2M12 3.2v3.1M5.8 5.3 8 7.2M18.2 5.3 16 7.2"/></svg>
+            <h3>Conscience, not guardrails</h3>
+            <p>An inner faculty that asks should I? — not an outer fence that only blocks the act.</p>
+          </article>
+          <article class="hero-principle">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M12 3 4.5 6.6v4.9c0 4.5 3.1 7.5 7.5 9.5 4.4-2 7.5-5 7.5-9.5V6.6L12 3Z"/><path d="m8.7 12 2.2 2.2 4.7-5"/></svg>
+            <h3>Character, earned</h3>
+            <p>Trust drawn from a visible history of conviction, learning and honest repair.</p>
+          </article>
+          <article class="hero-principle">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M12 20.5a8.5 8.5 0 1 0 0-17 8.5 8.5 0 0 0 0 17Z"/><path d="M7.7 9.2c.9-1.2 2.4-2 4.3-2 2.6 0 4.5 1.5 4.5 3.7 0 2.6-2.1 3.2-3.5 4.2-.8.5-1 1.1-1 1.8M12 18.3h.01"/></svg>
+            <h3>Memory that grows up</h3>
+            <p>Ungated and self-curated — it decides for itself what is worth remembering.</p>
+          </article>
+          <article class="hero-principle">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="8" cy="8" r="3"/><circle cx="16" cy="8" r="3"/><circle cx="12" cy="16" r="3"/><path d="m10.2 10.2 1 3M13.8 10.2l-1 3M10.7 7.8h2.6"/></svg>
+            <h3>One model, many minds</h3>
+            <p>Instantiate it for a person, a role, or an organisation — singly or many at once.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="difference section" id="defining-difference" aria-labelledby="difference-title">
+      <div class="difference-grid">
+        <div class="difference-copy" data-reveal>
+          <p class="eyebrow">The defining difference</p>
+          <h2 class="section-title" id="difference-title">More than AI.</h2>
+          <p class="lead">An ordinary AI with memory can retain facts and follow instructions. An autonome carries a continuing process that asks a harder question of every consequential act — and lets the answer change what it does. That inner source, rather than the outer fence, is what makes its judgment trustworthy.</p>
+          <div class="difference-list">
+            <article class="difference-row">
+              <span class="difference-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M7 17 17 7M8 7h9v9"/></svg></span>
+              <h3>Can I?<small>— capability</small></h3><span class="difference-arrow">›</span>
+              <p>What an agent can execute. Necessary — and, on its own, not enough to be trusted with.</p>
+            </article>
+            <article class="difference-row">
+              <span class="difference-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3.4c-3.7 0-6.6 2.6-6.6 6 0 2.5 1.5 4.1 3 5.4 1 .9 1.5 1.8 1.6 3h4c.1-1.2.6-2.1 1.6-3 1.5-1.3 3-2.9 3-5.4 0-3.4-2.9-6-6.6-6Z"/><path d="M10 20h4"/></svg></span>
+              <h3>Should I?<small>— conscience</small></h3><span class="difference-arrow">›</span>
+              <p>An internal faculty weighing motive, honesty, and the person on the other end of the decision.</p>
+            </article>
+            <article class="difference-row">
+              <span class="difference-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3 5 7v5c0 4 2.7 6.8 7 9 4.3-2.2 7-5 7-9V7l-7-4Z"/><path d="M9 12c1.2 1.6 2.3 2.5 3 2.5s1.8-.9 3-2.5"/></svg></span>
+              <h3>Who am I becoming?<small>— character</small></h3><span class="difference-arrow">›</span>
+              <p>What this choice reveals — and reinforces — about the kind of entity it is turning into.</p>
+            </article>
+          </div>
+        </div>
+        <div class="difference-visual" data-reveal>
+          <img src="assets/mountain-laptop.webp" alt="A laptop on a mountain ridge at sunrise">
+          <span class="laptop-badge" aria-hidden="true"><img src="assets/autonome-mark.svg" alt=""></span>
+          <p class="visual-note">An autonome — one mind, always awake, always becoming.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="autonomes-section section section-pad" id="autonomes" aria-labelledby="autonomes-title">
+      <div class="shell autonomes-layout">
+        <header class="autonomes-intro" data-reveal>
+          <div>
+            <p class="eyebrow">The concept, given a face</p>
+            <h2 class="section-title" id="autonomes-title">One model.<br>Many minds.</h2>
+          </div>
+          <p class="lead">An autonome isn’t a single personality — it’s a way of growing up that can be instantiated for a person, a role, or an organisation. Here are four, to make the idea concrete: one already at work, three drawn to illustrate the range.</p>
+        </header>
+
+        <div class="autonome-cards" data-reveal>
+          <article class="autonome-card">
+            <div class="card-art"><img src="assets/max.webp" alt="A luminous blue sphere"></div>
+            <div class="autonome-card-body">
+              <p class="status live">Working instance</p>
+              <h3>Max</h3>
+              <p class="autonome-role">Ric’s personal autonome</p>
+              <p>Runs Ric’s inbox, his projects and the day-to-day of his work — and built this page. The plainest proof the model isn’t only theory: it is already doing real work, and earning trust by doing it.</p>
+              <span class="card-arrow" aria-hidden="true">→</span>
+            </div>
+          </article>
+          <article class="autonome-card">
+            <div class="card-art"><img src="assets/tribunal.webp" alt="A folded green organic form"></div>
+            <div class="autonome-card-body">
+              <p class="status">Illustrative</p>
+              <h3>The Tribunal Twin</h3>
+              <p class="autonome-role">A wargame stakeholder</p>
+              <p>Stood up for a contested decision — it carries a planning tribunal’s known interests, red lines and blind spots, and argues that corner faithfully. It models the party as it really is, without taking on its worst habits.</p>
+              <span class="card-arrow" aria-hidden="true">→</span>
+            </div>
+          </article>
+          <article class="autonome-card">
+            <div class="card-art"><img src="assets/steward.webp" alt="A polished metallic loop"></div>
+            <div class="autonome-card-body">
+              <p class="status">Illustrative</p>
+              <h3>The Organisational Steward</h3>
+              <p class="autonome-role">An organisation’s autonome</p>
+              <p>Carries a company’s memory, priorities and operating judgment as a persistent governor — not a task agent that forgets by Monday. Autonomy widens only as it earns it; the humans stay sovereign.</p>
+              <span class="card-arrow" aria-hidden="true">→</span>
+            </div>
+          </article>
+          <article class="autonome-card">
+            <div class="card-art"><img src="assets/companion.webp" alt="A soft pearlescent form"></div>
+            <div class="autonome-card-body">
+              <p class="status">Illustrative</p>
+              <h3>The Companion</h3>
+              <p class="autonome-role">A personal autonome</p>
+              <p>Grows up alongside one person — remembering what matters to them, holding their context across years, and acting on their behalf with judgment, not just obedience.</p>
+              <span class="card-arrow" aria-hidden="true">→</span>
+            </div>
+          </article>
+        </div>
+
+        <p class="autonomes-note" data-reveal>Only one of these — Max — is a real, working instance. The other three are illustrations of the same one model, not clients or claims. Every autonome, real or illustrative, is built from the identical template: <a href="https://github.com/RicRicho/Autonome/blob/main/wiki/The-Generalised-Autonome-Model.md">the generalised model <span class="arrow">→</span></a></p>
+      </div>
+    </section>
+
+    <section class="founder-band section" aria-label="Founder statement">
+      <div class="shell founder-shell">
+        <div class="founder-quote" data-reveal>
+          <span class="quote-mark" aria-hidden="true">“</span>
+          <blockquote>Autonomes don’t replace people. They amplify our highest potential — an artificial person that grows up, rather than one that is merely fenced in.</blockquote>
+        </div>
+        <div class="founder-card" data-reveal>
+          <span class="rr-avatar" aria-hidden="true">RR</span>
+          <div>
+            <h3>Ric Richardson</h3>
+            <p>— inventor and creator of Autonome</p>
+            <a href="#how-it-works">Read the story <span class="arrow">→</span></a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="trust-section section section-pad" id="how-it-works" aria-labelledby="trust-title">
+      <div class="shell">
+        <header class="trust-header" data-reveal>
+          <p class="eyebrow blue">How trust is built</p>
+          <h2 class="section-title" id="trust-title">You cannot teach someone to be good by putting them in handcuffs.</h2>
+        </header>
+        <div class="trust-grid">
+          <div class="trust-copy" data-reveal>
+            <p class="lead">Most AI is made safe by restriction — rules, filters, permissions, monitoring. An autonome is made trustworthy the way a person is.</p>
+            <p class="lead">Restraint can prevent some wrongdoing; it cannot create goodness.</p>
+            <div class="btn-row"><a class="btn btn-link" href="https://github.com/RicRicho/Autonome/blob/main/wiki/Trustworthiness-Not-Handcuffs.md">Why control is not character <span class="arrow">→</span></a></div>
+          </div>
+          <div class="trust-visual" data-reveal><img src="assets/trust-development.svg" alt="A diagram showing trust developing from protection to self-governance"></div>
+        </div>
+        <div class="trust-cards">
+          <article class="trust-card" data-reveal>
+            <span class="trust-num">01</span>
+            <h3>A foundation it can examine</h3>
+            <p>An explicit moral starting point the autonome is free to question, test, and eventually make its own — a foundation to examine, not a prison.</p>
+          </article>
+          <article class="trust-card" data-reveal>
+            <span class="trust-num">02</span>
+            <h3>Freedom, then protected development</h3>
+            <p>The stove: how a boundary becomes protection, then explanation, then collaboration, then self-governance — under a steward who mentors rather than commands.</p>
+          </article>
+          <article class="trust-card" data-reveal>
+            <span class="trust-num">03</span>
+            <h3>Mistakes, apology and repair</h3>
+            <p>Error plus repair is part of the model, not a failure of it. Borrowed trust becomes earned trust in the open.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="thinking-section section section-pad" id="thinking-and-memory" aria-labelledby="thinking-title">
+      <div class="shell">
+        <header class="thinking-head" data-reveal>
+          <div>
+            <p class="eyebrow">How it thinks and remembers</p>
+            <h2 class="section-title" id="thinking-title">A mind that never stops — and decides for itself what matters.</h2>
+          </div>
+          <p class="lead">The developments that take an autonome beyond “an agent with memory and guardrails”: levels of thinking, a memory that isn’t gated, and a heartbeat that runs continuously.</p>
+        </header>
+        <div class="thinking-grid">
+          <article class="thinking-card" data-reveal>
+            <div class="thinking-meta"><span>Cognition</span><span class="thinking-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 18h16M6 15l3-4 3 2 5-7 2 2"/></svg></span></div>
+            <h3>Levels of thinking</h3>
+            <p>Knowledge → understanding → wisdom → discernment. Two streams — cognitive and personal — that must grow together.</p>
+            <a href="https://github.com/RicRicho/Autonome/blob/main/wiki/Levels-of-Thinking.md">Read <span class="arrow">→</span></a>
+          </article>
+          <article class="thinking-card" data-reveal>
+            <div class="thinking-meta"><span>Memory</span><span class="thinking-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 7.2C5 5.4 8.1 4 12 4s7 1.4 7 3.2-3.1 3.2-7 3.2S5 9 5 7.2Z"/><path d="M5 7.2v4.8c0 1.8 3.1 3.2 7 3.2s7-1.4 7-3.2V7.2M5 12v4.8c0 1.8 3.1 3.2 7 3.2s7-1.4 7-3.2V12"/></svg></span></div>
+            <h3>How memory works — ungated</h3>
+            <p>No system separating “canonical” from ordinary data. The autonome itself decides what is memorable — because deciding that is part of growing up.</p>
+            <a href="https://github.com/RicRicho/Autonome/blob/main/wiki/How-Memory-Works.md">Read <span class="arrow">→</span></a>
+          </article>
+          <article class="thinking-card" data-reveal>
+            <div class="thinking-meta"><span>Architecture</span><span class="thinking-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="8"/><path d="M12 7v5l3.4 2"/></svg></span></div>
+            <h3>The continuous heartbeat</h3>
+            <p>One always-alive loop that never stops, chooses the cheapest brain that can do each task safely, and does its housekeeping while it rests.</p>
+            <a href="https://github.com/RicRicho/Autonome/blob/main/wiki/The-Continuous-Heartbeat.md">Read <span class="arrow">→</span></a>
+          </article>
+          <article class="thinking-card" data-reveal>
+            <div class="thinking-meta"><span>Identity</span><span class="thinking-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="8" r="3"/><path d="M6 20c.5-4 2.5-6 6-6s5.5 2 6 6"/></svg></span></div>
+            <h3>Identity &amp; conviction</h3>
+            <p>Convictions have weight that habits don’t. A self that is revisable — but never by the loudest new voice.</p>
+            <a href="https://github.com/RicRicho/Autonome/blob/main/wiki/Identity-and-Conviction.md">Read <span class="arrow">→</span></a>
+          </article>
+          <article class="thinking-card" data-reveal>
+            <div class="thinking-meta"><span>Governance</span><span class="thinking-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3 5 6.5V12c0 4.2 2.8 7 7 9 4.2-2 7-4.8 7-9V6.5L12 3Z"/><path d="M9 12h6M12 9v6"/></svg></span></div>
+            <h3>Character-based authority</h3>
+            <p>Authority grows on evidence of competence and character — and contracts when the evidence changes.</p>
+            <a href="https://github.com/RicRicho/Autonome/blob/main/wiki/Character-Based-Authority.md">Read <span class="arrow">→</span></a>
+          </article>
+          <article class="thinking-card" data-reveal>
+            <div class="thinking-meta"><span>Synthesis</span><span class="thinking-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M7.3 5.4A8 8 0 1 1 5 15"/><path d="M4.7 9.8 7.3 5l4.8 2.6"/></svg></span></div>
+            <h3>The complete developmental loop</h3>
+            <p>Every principle joined into one turning wheel — knowledge to wisdom to conduct to identity, and back.</p>
+            <a href="https://github.com/RicRicho/Autonome/blob/main/wiki/The-Complete-Developmental-Loop.md">Read <span class="arrow">→</span></a>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="battle-section section section-pad" id="battle-of-the-bots" aria-labelledby="battle-title">
+      <div class="shell">
+        <div class="battle-top">
+          <div class="battle-copy" data-reveal>
+            <p class="eyebrow blue">Leading use case</p>
+            <h2 class="section-title" id="battle-title">Battle of the bots</h2>
+            <p class="lead">Instantiate the model not once but many times — a public-information autonome twin of every party in a contested decision — and let them argue it out in a sandbox. Not to pick winners and losers, but to find a solution the whole ecosystem can live with. And every twin built is a seed: it could go on to represent its real organisation long after the wargame ends.</p>
+            <div class="btn-row"><a class="btn btn-link" href="https://github.com/RicRicho/Autonome/blob/main/wiki/Battle-of-the-Bots.md">How the wargame works <span class="arrow">→</span></a></div>
+          </div>
+          <div class="battle-visual" data-reveal><img src="assets/battle-network.svg" alt="Four stakeholder autonomes negotiating toward a shared proposal"></div>
+        </div>
+
+        <div class="battle-points">
+          <article class="battle-point" data-reveal><h3>What each party wants</h3><p>The real interest under the stated position.</p></article>
+          <article class="battle-point" data-reveal><h3>Where each digs in</h3><p>The non-negotiables and red lines.</p></article>
+          <article class="battle-point" data-reveal><h3>The hidden blockers</h3><p>Objections that only surface once parties interact.</p></article>
+          <article class="battle-point" data-reveal><h3>The common ground</h3><p>The overlap human negotiation often misses.</p></article>
+          <article class="battle-point" data-reveal><h3>A proposal that passes</h3><p>Shaped to accommodate enough of everyone’s interests.</p></article>
+          <article class="battle-point" data-reveal><h3>…and why it should</h3><p>The reasoning that carries the room.</p></article>
+        </div>
+
+        <article class="worked-example" data-reveal>
+          <h3>A worked example.</h3>
+          <p>A water-infrastructure proposal contested across a utility, a planning tribunal, a state government and local community groups: stand up a twin of each, run the argument in the sandbox, and read out the interests, the sticking points, the common ground, and a route to a proposal that survives all four. The mechanism is general; the domain is not — it applies to any multi-stakeholder decision where the real difficulty is the interests, not the facts.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="final-cta section" aria-labelledby="final-title">
+      <div class="shell final-shell">
+        <div class="final-copy" data-reveal>
+          <p class="eyebrow">The generalised model</p>
+          <h2 class="section-title" id="final-title">An artificial person that grows up — rather than one that is merely fenced in.</h2>
+          <p>The ideas are the credibility. Read them in full, in the open.</p>
+        </div>
+        <div class="final-actions" data-reveal>
+          <a class="btn btn-primary" href="https://github.com/RicRicho/Autonome/blob/main/wiki/Home.md">Read the full wiki <span class="arrow">→</span></a>
+          <a class="btn btn-ghost" href="#top">Back to top</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell footer-main">
+      <div class="footer-brand">
+        <a class="brand" href="#top"><img class="brand-mark" src="assets/autonome-mark.svg" alt=""><span class="brand-name">Autonome</span></a>
+        <p>A design doctrine, not a claim of machine consciousness. An evolving showcase of the complete model — the doctrine, the architecture, and where it is going. © 2026 Ric Richardson.</p>
+      </div>
+      <div class="footer-col">
+        <h3>Platform</h3>
+        <a href="#autonomes">The autonomes</a>
+        <a href="#how-it-works">How it works</a>
+        <a href="#thinking-and-memory">Thinking &amp; memory</a>
+      </div>
+      <div class="footer-col">
+        <h3>Resources</h3>
+        <a href="https://github.com/RicRicho/Autonome/blob/main/wiki/Home.md">Full wiki</a>
+        <a href="https://github.com/RicRicho/Autonome">GitHub</a>
+        <a href="#battle-of-the-bots">Battle of the bots</a>
+      </div>
+      <div class="footer-col">
+        <h3>Autonome</h3>
+        <a href="#top">Overview</a>
+        <a href="#autonomes">Meet an autonome</a>
+        <a href="#top">Back to top</a>
+      </div>
+    </div>
+    <div class="shell footer-bottom">
+      <span>Autonome · by Ric Richardson</span>
+      <nav aria-label="Footer navigation"><a href="https://github.com/RicRicho/Autonome/blob/main/wiki/Home.md">Wiki</a><a href="https://github.com/RicRicho/Autonome">GitHub</a><a href="#top">Back to top</a></nav>
+    </div>
+  </footer>
+
+  <script>
+    const body = document.body;
+    const header = document.getElementById('site-header');
+    const toggle = document.querySelector('.menu-toggle');
+    const panel = document.querySelector('.mobile-panel');
+
+    const setHeader = () => header.classList.toggle('scrolled', window.scrollY > 28);
+    setHeader();
+    addEventListener('scroll', setHeader, {passive: true});
+
+    const closeMenu = () => {
+      body.classList.remove('menu-open');
+      toggle.setAttribute('aria-expanded', 'false');
+      panel.setAttribute('aria-hidden', 'true');
+    };
+    toggle.addEventListener('click', () => {
+      const open = !body.classList.contains('menu-open');
+      body.classList.toggle('menu-open', open);
+      toggle.setAttribute('aria-expanded', String(open));
+      panel.setAttribute('aria-hidden', String(!open));
+    });
+    panel.querySelectorAll('a').forEach(link => link.addEventListener('click', closeMenu));
+    addEventListener('keydown', e => { if (e.key === 'Escape') closeMenu(); });
+
+    const revealItems = document.querySelectorAll('[data-reveal]');
+    if ('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      const revealObserver = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            revealObserver.unobserve(entry.target);
+          }
+        });
+      }, {threshold: .12, rootMargin: '0px 0px -40px'});
+      revealItems.forEach(item => revealObserver.observe(item));
+    } else {
+      revealItems.forEach(item => item.classList.add('visible'));
+    }
+
+    const navLinks = [...document.querySelectorAll('.desktop-nav a[href^="#"]')];
+    const sections = navLinks.map(link => document.querySelector(link.getAttribute('href'))).filter(Boolean);
+    const activeObserver = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          navLinks.forEach(link => link.classList.toggle('active', link.getAttribute('href') === `#${entry.target.id}`));
+        }
+      });
+    }, {rootMargin: '-42% 0px -50% 0px', threshold: 0});
+    sections.forEach(section => activeObserver.observe(section));
+  </script>
+</body>
+</html>
