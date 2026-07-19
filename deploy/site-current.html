@@ -19,10 +19,20 @@
 <meta name="twitter:image" content="https://autonome.ricricho.com/og.jpg">
 <link rel="canonical" href="https://autonome.ricricho.com/">
 <meta name="theme-color" content="#050506">
-<!-- Analytics: PostHog, cookieless (persistence:memory) — no cookie banner required -->
+<!-- Analytics: first-party, cookieless. Page views + widget events -> /api/pv -> Supabase autonome_pageviews. No cookies, no third party, no banner. -->
 <script>
-!function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="init capture register register_once register_for_session unregister unregister_for_session getFeatureFlag getFeatureFlagPayload isFeatureEnabled reloadFeatureFlags updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures on onFeatureFlags onSessionId getSurveys getActiveMatchingSurveys renderSurvey canRenderSurvey identify setPersonProperties group resetGroups setPersonPropertiesForFlags resetPersonPropertiesForFlags setGroupPropertiesForFlags resetGroupPropertiesForFlags reset get_distinct_id getGroups get_session_id get_session_replay_url alias set_config startSessionRecording stopSessionRecording sessionRecordingStarted captureException loadToolbar get_property getSessionProperty createPersonProfile opt_in_capturing opt_out_capturing has_opted_in_capturing has_opted_out_capturing clear_opt_in_out_capturing debug getPageViewId".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
-posthog.init('phc_xtvCtW7QgBweBxZZxjzoikRcQJDQxPZJZq8LeURXg47s',{api_host:'https://us.i.posthog.com',persistence:'memory',autocapture:false,capture_pageview:true,capture_pageleave:true,disable_session_recording:true});
+(function(){
+  function track(ev){
+    try{
+      var body=JSON.stringify({event:ev||'pageview',path:location.pathname,referrer:document.referrer||''});
+      if(navigator.sendBeacon){navigator.sendBeacon('/api/pv',new Blob([body],{type:'application/json'}));}
+      else{fetch('/api/pv',{method:'POST',headers:{'Content-Type':'application/json'},body:body,keepalive:true});}
+    }catch(e){}
+  }
+  window.autonomeTrack=track;
+  if(document.readyState!=='loading')track('pageview');
+  else document.addEventListener('DOMContentLoaded',function(){track('pageview');});
+})();
 </script>
 <meta property="og:type" content="website">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Cdefs%3E%3CradialGradient id='r' cx='38%25' cy='32%25' r='75%25'%3E%3Cstop offset='0' stop-color='%23bcd8ff'/%3E%3Cstop offset='.55' stop-color='%237db8ff'/%3E%3Cstop offset='1' stop-color='%236a4bd8'/%3E%3C/radialGradient%3E%3C/defs%3E%3Ccircle cx='20' cy='20' r='13' fill='url(%23r)'/%3E%3C/svg%3E">
@@ -255,7 +265,7 @@ posthog.init('phc_xtvCtW7QgBweBxZZxjzoikRcQJDQxPZJZq8LeURXg47s',{api_host:'https
     <a href="#how">How it works</a>
     <a href="#battle">Battle of the bots</a>
     <a href="https://github.com/RicRicho/Autonome/blob/main/wiki/Home.md">Wiki</a>
-    <a href="mailto:max@mail.ricricho.com">Contact</a>
+    <a href="mailto:max@mail.ricricho.com" onclick="if(window.Contact&&Contact.open){Contact.open();return false;}">Contact</a>
   </div>
   <div class="navactions">
     <a class="navcta" href="#faces">Meet an autonome →</a>
@@ -483,12 +493,84 @@ posthog.init('phc_xtvCtW7QgBweBxZZxjzoikRcQJDQxPZJZq8LeURXg47s',{api_host:'https
   <div class="foothref">
     <a href="https://github.com/RicRicho/Autonome/blob/main/wiki/Home.md">Full wiki</a>
     <a href="https://github.com/RicRicho/Autonome">GitHub</a>
-    <a href="mailto:max@mail.ricricho.com">Contact — max@mail.ricricho.com</a>
+    <a href="mailto:max@mail.ricricho.com" onclick="if(window.Contact&&Contact.open){Contact.open();return false;}">Contact</a>
     <a href="#top" onclick="if(window.Max&&Max.open){Max.open();return false;}">Talk with Max</a>
     <a href="#top">Back to top</a>
   </div>
 </div></footer>
 
+
+<!-- ===== Contact form (posts to /api/contact -> AgentMail max@mail.ricricho.com) ===== -->
+<style>
+  #ctov{position:fixed;inset:0;z-index:70;display:none;align-items:center;justify-content:center;padding:20px;
+    background:rgba(3,3,5,.66);backdrop-filter:blur(4px)}
+  #ctov.open{display:flex}
+  #ctcard{width:min(440px,100%);background:var(--panel);border:1px solid var(--line2);border-radius:18px;
+    box-shadow:0 40px 120px rgba(0,0,0,.65);overflow:hidden}
+  .ct-head{display:flex;align-items:center;gap:11px;padding:16px 18px;border-bottom:1px solid var(--line);
+    background:linear-gradient(180deg,var(--panel2),var(--panel))}
+  .ct-head b{flex:1;font-size:15.5px;font-weight:640}
+  .ct-head .x{cursor:pointer;color:var(--muted);border:0;background:none;font-size:22px;line-height:1;padding:2px 6px}
+  .ct-head .x:hover{color:var(--ink)}
+  .ct-body{padding:16px 18px 18px;display:flex;flex-direction:column;gap:11px}
+  .ct-body label{font-size:12px;color:var(--faint);margin:0 0 -5px 2px}
+  .ct-body input,.ct-body textarea{width:100%;padding:11px 13px;border-radius:11px;border:1px solid var(--line2);
+    background:var(--bg2);color:var(--ink);font:inherit;font-size:14px;line-height:1.4;box-sizing:border-box}
+  .ct-body textarea{resize:vertical;min-height:104px}
+  .ct-body input:focus,.ct-body textarea:focus{outline:none;border-color:var(--accent)}
+  .ct-note{color:var(--faint);font-size:11.5px;line-height:1.45;margin:0 2px}
+  .ct-send{margin-top:3px;padding:12px 14px;border-radius:12px;border:0;cursor:pointer;background:var(--ink);color:#000;font:inherit;font-size:14.5px;font-weight:600}
+  .ct-send:disabled{opacity:.5;cursor:default}
+  .ct-ok{color:#9fe7c0;font-size:13.5px}
+</style>
+<div id="ctov" role="dialog" aria-label="Contact Max" aria-modal="true">
+  <div id="ctcard">
+    <div class="ct-head"><b>Get in touch</b><button class="x" id="ctx" aria-label="Close">×</button></div>
+    <div class="ct-body" id="ctform">
+      <label for="ctname">Name</label>
+      <input id="ctname" type="text" maxlength="120" placeholder="Your name" autocomplete="name">
+      <label for="ctemail">Email</label>
+      <input id="ctemail" type="email" maxlength="200" placeholder="you@example.com" autocomplete="email">
+      <label for="ctmsg">Message</label>
+      <textarea id="ctmsg" maxlength="4000" placeholder="What's on your mind?"></textarea>
+      <p class="ct-note">Goes straight to Max at max@mail.ricricho.com. Prefer your own email app? <a href="mailto:max@mail.ricricho.com">Email directly</a>.</p>
+      <button class="ct-send" id="ctsend">Send message</button>
+    </div>
+  </div>
+</div>
+<script>
+(function(){
+  var ov=document.getElementById('ctov'),card=document.getElementById('ctcard'),
+      x=document.getElementById('ctx'),send=document.getElementById('ctsend'),form=document.getElementById('ctform');
+  function open(){ov.classList.add('open');setTimeout(function(){document.getElementById('ctname').focus();},30);}
+  function close(){ov.classList.remove('open');}
+  window.Contact={open:open,close:close};
+  x.onclick=close;
+  ov.addEventListener('click',function(e){if(e.target===ov)close();});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape')close();});
+  send.onclick=function(){
+    var name=document.getElementById('ctname').value.trim(),
+        email=document.getElementById('ctemail').value.trim(),
+        msg=document.getElementById('ctmsg').value.trim();
+    if(!msg){document.getElementById('ctmsg').focus();return;}
+    send.disabled=true;send.textContent='Sending…';
+    fetch('/api/contact',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({name:name,email:email,message:msg})})
+    .then(function(r){return r.json().then(function(j){return{status:r.status,j:j};});})
+    .then(function(res){
+      if(res.status===200&&res.j&&res.j.ok){
+        form.innerHTML='<p class="ct-ok">Thanks — your message is on its way to Max. We\'ll be in touch.</p>';
+      }else{
+        send.disabled=false;send.textContent='Send message';
+        var e=(res.j&&res.j.error)||'Something went wrong — try again, or email max@mail.ricricho.com.';
+        alert(e);
+      }
+    })
+    .catch(function(){send.disabled=false;send.textContent='Send message';alert('Network hiccup — try again, or email max@mail.ricricho.com.');});
+  };
+})();
+</script>
+<!-- ===== end contact form ===== -->
 <!-- ===== Talk with Max — public sandboxed chat widget ===== -->
 <style>
   #maxfab{position:fixed;right:22px;bottom:22px;z-index:60;display:inline-flex;align-items:center;gap:10px;
@@ -566,7 +648,7 @@ posthog.init('phc_xtvCtW7QgBweBxZZxjzoikRcQJDQxPZJZq8LeURXg47s',{api_host:'https
     if(!greeted){greeted=true;
       add('bot',"Hi — I'm Max, the public face of Autonome. I'm a live example of the idea: an AI meant to earn trust over time. Ask me anything about how autonomes work, or about Ric's doctrine.");
     }
-    if(window.posthog)try{posthog.capture('chat_opened');}catch(e){}
+    if(window.autonomeTrack)try{autonomeTrack('chat_opened');}catch(e){}
   }
   function closePanel(){panel.classList.remove('open');fab.style.display='inline-flex';}
   fab.onclick=openPanel;closeb.onclick=closePanel;
@@ -582,7 +664,7 @@ posthog.init('phc_xtvCtW7QgBweBxZZxjzoikRcQJDQxPZJZq8LeURXg47s',{api_host:'https
     busy=true;send.disabled=true;
     var typ=document.createElement('div');typ.className='mx-typing';typ.textContent='Max is thinking…';
     body.appendChild(typ);body.scrollTop=body.scrollHeight;
-    if(window.posthog)try{posthog.capture('chat_message_sent');}catch(e){}
+    if(window.autonomeTrack)try{autonomeTrack('chat_message_sent');}catch(e){}
     fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({session_id:sid,message:msg})})
     .then(function(r){return r.json().then(function(j){return{status:r.status,j:j};});})

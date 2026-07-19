@@ -75,7 +75,7 @@
     if(!greeted){greeted=true;
       add('bot',"Hi — I'm Max, the public face of Autonome. I'm a live example of the idea: an AI meant to earn trust over time. Ask me anything about how autonomes work, or about Ric's doctrine.");
     }
-    if(window.posthog)try{posthog.capture('chat_opened');}catch(e){}
+    if(window.autonomeTrack)try{autonomeTrack('chat_opened');}catch(e){}
   }
   function closePanel(){panel.classList.remove('open');fab.style.display='inline-flex';}
   fab.onclick=openPanel;closeb.onclick=closePanel;
@@ -91,7 +91,7 @@
     busy=true;send.disabled=true;
     var typ=document.createElement('div');typ.className='mx-typing';typ.textContent='Max is thinking…';
     body.appendChild(typ);body.scrollTop=body.scrollHeight;
-    if(window.posthog)try{posthog.capture('chat_message_sent');}catch(e){}
+    if(window.autonomeTrack)try{autonomeTrack('chat_message_sent');}catch(e){}
     fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({session_id:sid,message:msg})})
     .then(function(r){return r.json().then(function(j){return{status:r.status,j:j};});})
