@@ -23,7 +23,7 @@ const HTML = new TextDecoder().decode(b64ToBytes(HTML_B64));
 const OG_BYTES = b64ToBytes(OG_B64);
 
 // ---- limits ----
-const MODEL = "claude-haiku-4-5-20251001";
+const MODEL = "claude-sonnet-5";
 const MAX_INPUT = 2000;
 const MAX_OUTPUT_TOKENS = 512;
 const HISTORY_LIMIT = 24;      // messages of context sent to the model
@@ -235,7 +235,10 @@ async function _handleChat(request, env) {
     const ar = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
       headers: { "x-api-key": env.ANTHROPIC_API_KEY, "anthropic-version": "2023-06-01", "content-type": "application/json" },
-      body: JSON.stringify({ model: MODEL, max_tokens: MAX_OUTPUT_TOKENS, system: SYSTEM_PROMPT, messages }),
+      // thinking disabled: keep the public chat snappy and preserve the full
+      // MAX_OUTPUT_TOKENS budget for the visible reply (Sonnet 5 runs adaptive
+      // thinking by default when the field is omitted, which would eat the budget).
+      body: JSON.stringify({ model: MODEL, max_tokens: MAX_OUTPUT_TOKENS, thinking: { type: "disabled" }, system: SYSTEM_PROMPT, messages }),
     });
     if (ar.ok) {
       const data = await ar.json();
