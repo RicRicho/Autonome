@@ -1,0 +1,111 @@
+<!-- ===== Talk with Max — public sandboxed chat widget ===== -->
+<style>
+  #maxfab{position:fixed;right:22px;bottom:22px;z-index:60;display:inline-flex;align-items:center;gap:10px;
+    padding:13px 20px 13px 15px;border-radius:980px;border:1px solid var(--line2);cursor:pointer;
+    background:linear-gradient(135deg,rgba(125,184,255,.16),rgba(179,157,255,.16));backdrop-filter:blur(14px);
+    color:var(--ink);font:inherit;font-size:14.5px;font-weight:560;letter-spacing:.01em;
+    box-shadow:0 10px 40px rgba(106,75,216,.35),0 4px 14px rgba(0,0,0,.4);transition:transform .15s}
+  #maxfab:hover{transform:translateY(-2px)}
+  #maxfab .orbmark{width:22px;height:22px}
+  #maxpanel{position:fixed;right:22px;bottom:22px;z-index:61;width:min(390px,calc(100vw - 32px));
+    height:min(610px,calc(100vh - 40px));display:none;flex-direction:column;overflow:hidden;
+    background:var(--panel);border:1px solid var(--line2);border-radius:20px;
+    box-shadow:0 40px 120px rgba(0,0,0,.65),0 0 0 1px rgba(255,255,255,.04) inset}
+  #maxpanel.open{display:flex}
+  .mx-head{display:flex;align-items:center;gap:11px;padding:15px 16px;border-bottom:1px solid var(--line);
+    background:linear-gradient(180deg,var(--panel2),var(--panel))}
+  .mx-head .orbmark{width:30px;height:30px;flex:0 0 30px}
+  .mx-head .who{flex:1;min-width:0}
+  .mx-head .who b{display:block;font-size:14.5px;font-weight:640}
+  .mx-head .who small{display:block;color:var(--faint);font-size:11.5px;letter-spacing:.02em}
+  .mx-head .x{cursor:pointer;color:var(--muted);border:0;background:none;font-size:22px;line-height:1;padding:2px 6px}
+  .mx-head .x:hover{color:var(--ink)}
+  .mx-body{flex:1;overflow-y:auto;padding:16px 15px;display:flex;flex-direction:column;gap:11px}
+  .mx-msg{max-width:85%;padding:10px 13px;border-radius:14px;font-size:14px;line-height:1.5;white-space:pre-wrap;word-wrap:break-word}
+  .mx-msg.bot{align-self:flex-start;background:var(--panel2);border:1px solid var(--line);border-bottom-left-radius:5px;color:var(--ink)}
+  .mx-msg.me{align-self:flex-end;background:linear-gradient(135deg,#2a3f66,#3a2f66);border:1px solid var(--line2);border-bottom-right-radius:5px;color:#eef2ff}
+  .mx-msg.sys{align-self:center;background:none;color:var(--faint);font-size:12px;text-align:center;max-width:95%}
+  .mx-typing{align-self:flex-start;color:var(--faint);font-size:13px;padding:4px 6px}
+  .mx-foot{border-top:1px solid var(--line);padding:10px 12px 12px}
+  .mx-note{color:var(--faint);font-size:11px;line-height:1.4;margin:0 2px 9px;text-align:center}
+  .mx-inrow{display:flex;gap:8px;align-items:flex-end}
+  .mx-in{flex:1;resize:none;max-height:120px;min-height:42px;padding:11px 13px;border-radius:12px;
+    border:1px solid var(--line2);background:var(--bg2);color:var(--ink);font:inherit;font-size:14px;line-height:1.4}
+  .mx-in:focus{outline:none;border-color:var(--accent)}
+  .mx-send{flex:0 0 auto;width:42px;height:42px;border-radius:12px;border:0;cursor:pointer;
+    background:var(--ink);color:#000;font-size:17px;display:inline-flex;align-items:center;justify-content:center}
+  .mx-send:disabled{opacity:.45;cursor:default}
+  @media(max-width:520px){#maxpanel{right:8px;bottom:8px;width:calc(100vw - 16px);height:calc(100vh - 20px)}}
+</style>
+
+<button id="maxfab" aria-label="Talk with Max"><span class="orbmark"></span>Talk with Max</button>
+
+<div id="maxpanel" role="dialog" aria-label="Talk with Max">
+  <div class="mx-head">
+    <span class="orbmark"></span>
+    <div class="who"><b>Max</b><small>public autonome · sandboxed · conversation only</small></div>
+    <button class="x" id="mxclose" aria-label="Close">×</button>
+  </div>
+  <div class="mx-body" id="mxbody"></div>
+  <div class="mx-foot">
+    <p class="mx-note">You're talking to the public, sandboxed Max — no tools, no account access. Conversations are stored. Don't share anything private.</p>
+    <div class="mx-inrow">
+      <textarea class="mx-in" id="mxin" rows="1" maxlength="2000" placeholder="Ask Max about autonomes…"></textarea>
+      <button class="mx-send" id="mxsend" aria-label="Send">↑</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var panel=document.getElementById('maxpanel'),fab=document.getElementById('maxfab'),
+      body=document.getElementById('mxbody'),input=document.getElementById('mxin'),
+      send=document.getElementById('mxsend'),closeb=document.getElementById('mxclose');
+  var sid=null, busy=false, greeted=false;
+  try{sid=localStorage.getItem('autonome_chat_sid')||null;}catch(e){}
+  function esc(s){var d=document.createElement('div');d.textContent=s;return d.innerHTML;}
+  function add(role,text){
+    var el=document.createElement('div');
+    el.className='mx-msg '+(role==='user'?'me':role==='sys'?'sys':'bot');
+    el.innerHTML=esc(text);
+    body.appendChild(el);body.scrollTop=body.scrollHeight;return el;
+  }
+  function openPanel(){
+    panel.classList.add('open');fab.style.display='none';input.focus();
+    if(!greeted){greeted=true;
+      add('bot',"Hi — I'm Max, the public face of Autonome. I'm a live example of the idea: an AI meant to earn trust over time. Ask me anything about how autonomes work, or about Ric's doctrine.");
+    }
+    if(window.posthog)try{posthog.capture('chat_opened');}catch(e){}
+  }
+  function closePanel(){panel.classList.remove('open');fab.style.display='inline-flex';}
+  fab.onclick=openPanel;closeb.onclick=closePanel;
+  window.Max={open:openPanel,close:closePanel};
+  input.addEventListener('input',function(){input.style.height='auto';input.style.height=Math.min(input.scrollHeight,120)+'px';});
+  input.addEventListener('keydown',function(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();submit();}});
+  send.onclick=submit;
+  function submit(){
+    if(busy)return;
+    var msg=input.value.trim();
+    if(!msg)return;
+    add('user',msg);input.value='';input.style.height='auto';
+    busy=true;send.disabled=true;
+    var typ=document.createElement('div');typ.className='mx-typing';typ.textContent='Max is thinking…';
+    body.appendChild(typ);body.scrollTop=body.scrollHeight;
+    if(window.posthog)try{posthog.capture('chat_message_sent');}catch(e){}
+    fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({session_id:sid,message:msg})})
+    .then(function(r){return r.json().then(function(j){return{status:r.status,j:j};});})
+    .then(function(res){
+      typ.remove();
+      if(res.status===429){add('sys',res.j.error||'You are sending messages a little fast — give it a moment and try again.');}
+      else if(res.j&&res.j.reply){
+        if(res.j.session_id){sid=res.j.session_id;try{localStorage.setItem('autonome_chat_sid',sid);}catch(e){}}
+        add('bot',res.j.reply);
+      } else {add('sys','Something went wrong reaching Max. Try again in a moment, or email max@mail.ricricho.com.');}
+    })
+    .catch(function(){typ.remove();add('sys','Network hiccup — try again, or email max@mail.ricricho.com.');})
+    .finally(function(){busy=false;send.disabled=false;input.focus();});
+  }
+})();
+</script>
+<!-- ===== end chat widget ===== -->
