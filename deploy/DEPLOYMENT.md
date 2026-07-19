@@ -24,13 +24,20 @@ The worker is **`deploy/worker.mjs`** — a self-contained ES module. The site H
 `og.jpg` bytes are embedded inside it as base64 and decoded once per isolate. `worker.mjs` is
 **generated**; do not hand-edit it. Edit the sources and rebuild:
 
-- `deploy/build/build_site.py` — injects social/canonical meta (incl. `og:image`), the
-  first-party cookieless analytics beacon, the mobile hamburger nav, the contact links + contact
-  form modal, and the chat widget into the captured pre-go-live homepage.
+- `deploy/gpt-home-2026-07-19.html` — **the base page**: the "male hero" redesign (a
+  self-contained premium black-and-white site, all images inlined as data URIs). This replaced
+  the earlier `deploy/live-home-2026-07-19.html` snapshot on 2026-07-19.
+- `deploy/build/build_site.py` — injects, on top of the base page: social/canonical meta + the
+  hosted `og:image` (worker `/og.jpg`), the first-party cookieless analytics beacon, PostHog,
+  the contact form modal, and the "Talk with Max" chat widget. The injected overlays carry their
+  own dark-theme CSS variables (scoped to their own containers) so they render correctly on the
+  redesign's own design system.
 - `deploy/build/widget.html` — the "Talk with Max" widget (markup + CSS + client JS).
 - `deploy/build/worker_template.mjs` — the worker logic with `__HTML_B64__` / `__OG_B64__`
   placeholders.
-- `deploy/live-home-2026-07-19.html` — the raw pre-go-live snapshot the build injects into.
+- `deploy/og.jpg` — the social card (the redesign's 1200×630 male-hero card as of 2026-07-19).
+- `deploy/live-home-2026-07-19.html` — the previous (pre-redesign) homepage snapshot, kept for
+  history.
 - `deploy/site-current.html` — the exact HTML the worker currently serves (rendered output).
 
 ### Rebuild
