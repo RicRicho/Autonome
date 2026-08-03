@@ -6,17 +6,18 @@ on:
   issue_comment:
     types: [created]
 
-permissions:
-  contents: write
-  issues: write
-  pull-requests: write
-
 jobs:
   claude:
     if: |
       (github.event_name == 'issues' && github.event.label.name == 'claude') ||
       (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@claude'))
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+      id-token: write # required by claude-code-action to mint its GitHub token
+      actions: read # lets Claude read CI results
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -24,9 +25,8 @@ jobs:
           fetch-depth: 1
 
       - name: Run Claude Code
-        uses: anthropics/claude-code-action@beta
+        uses: anthropics/claude-code-action@v1
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
         env:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
-          WARP_WRITE_KEY: ${{ secrets.WARP_WRITE_KEY }}
