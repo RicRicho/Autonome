@@ -155,3 +155,28 @@ are not gated.
 
 > The Cloudflare zone serves its own managed `/robots.txt` (AI-crawler content-signals policy),
 > which overrides the worker's `/robots.txt` route — expected.
+
+## Canary (cron trigger, added 2026-08-07)
+
+The worker has a `scheduled()` handler wired to a Cloudflare cron trigger **`10 22 * * *`**
+(22:10 UTC = 08:10 AEST daily). Each run checks:
+
+1. Anthropic `/v1/messages` answers (4-token ping on `MODEL`),
+2. OpenAI `/v1/chat/completions` answers (the fallback provider),
+3. `https://patentmachine.com.au/api/chat` returns a real answer rather than its
+   "hiccup reaching my brain" error line.
+
+If anything fails it emails `max@mail.ricricho.com` via AgentMail — which routes inbound to the
+Max doer, so a degraded chat becomes a job instead of sitting unseen. **Silence means healthy**;
+the canary sends nothing when everything works.
+
+Set/inspect the schedule:
+
+```
+PUT/GET https://api.cloudflare.com/client/v4/accounts/575417eca8f9e1ed9a77f880c07a057e/workers/scripts/autonome-site/schedules
+Authorization: Bearer <CLOUDFLARE_API_TOKEN>
+body: [{"cron":"10 22 * * *"}]
+```
+
+Note: a script PUT does **not** wipe cron triggers (unlike bindings), but re-check after any
+deploy that replaces the script via a different tool.

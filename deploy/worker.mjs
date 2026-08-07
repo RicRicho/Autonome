@@ -300,7 +300,82 @@ async function _handleChat(request, env) {
   return json({ session_id: sid, reply });
 }
 
+// ---- daily canary ----
+// The 1-7 Aug 2026 outage was invisible for six days because every failure path
+// returns a friendly sentence and HTTP 200. This checks the things that actually
+// break and emails max@mail.ricricho.com (which routes to Max) only when something
+// is wrong. Silence means healthy.
+const PM_CHAT = "https://patentmachine.com.au/api/chat";
+const PM_FALLBACK_MARKER = "hiccup reaching my brain";
+
+async function canaryProviders(env) {
+  const problems = [];
+  if (env.ANTHROPIC_API_KEY) {
+    try {
+      const r = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: { "x-api-key": env.ANTHROPIC_API_KEY, "anthropic-version": "2023-06-01", "content-type": "application/json" },
+        body: JSON.stringify({ model: MODEL, max_tokens: 4, thinking: { type: "disabled" }, messages: [{ role: "user", content: "ping" }] }),
+      });
+      if (!r.ok) problems.push("Anthropic " + r.status + ": " + (await r.text()).slice(0, 220));
+    } catch (e) { problems.push("Anthropic threw: " + (e && e.message ? e.message : String(e))); }
+  } else {
+    problems.push("Anthropic: no key bound on the worker.");
+  }
+
+  if (env.OPENAI_API_KEY) {
+    try {
+      const r = await fetch("https://api.openai.com/v1/chat/completions", {
+        method: "POST",
+        headers: { authorization: "Bearer " + env.OPENAI_API_KEY, "content-type": "application/json" },
+        body: JSON.stringify({ model: FALLBACK_MODEL, max_completion_tokens: 16, messages: [{ role: "user", content: "ping" }] }),
+      });
+      if (!r.ok) problems.push("OpenAI (the fallback) " + r.status + ": " + (await r.text()).slice(0, 220));
+    } catch (e) { problems.push("OpenAI (the fallback) threw: " + (e && e.message ? e.message : String(e))); }
+  } else {
+    problems.push("OpenAI fallback: no key bound on the worker.");
+  }
+
+  // Patent Machine's public sales chat went down in the same outage.
+  try {
+    const r = await fetch(PM_CHAT, {
+      method: "POST",
+      headers: { "content-type": "application/json", origin: "https://patentmachine.com.au" },
+      body: JSON.stringify({ message: "What does Patent Machine do?" }),
+    });
+    const t = (await r.text()) || "";
+    if (!r.ok) problems.push("Patent Machine sales chat " + r.status + ".");
+    else if (t.indexOf(PM_FALLBACK_MARKER) !== -1)
+      problems.push("Patent Machine sales chat is serving its error line to prospects instead of answering.");
+  } catch (e) { problems.push("Patent Machine sales chat unreachable: " + (e && e.message ? e.message : String(e))); }
+
+  return problems;
+}
+
+async function runCanary(env) {
+  let problems;
+  try { problems = await canaryProviders(env); } catch (e) { return; }
+  if (!problems.length || !env.AGENTMAIL_API_KEY) return;
+  const text =
+    "Automated check from the Autonome site worker.\n\n" +
+    "Something that visitors and prospects touch is broken right now:\n\n" +
+    problems.map((p, i) => i + 1 + ". " + p).join("\n") +
+    "\n\nThe public chat degrades politely instead of erroring, so this will not look broken " +
+    "from the outside. It stayed unnoticed for six days in August 2026 for exactly that reason.\n" +
+    "If the message above mentions a credit balance, the fix is a top-up at console.anthropic.com.\n";
+  try {
+    await fetch("https://api.agentmail.to/v0/inboxes/" + encodeURIComponent(CONTACT_INBOX) + "/messages/send", {
+      method: "POST",
+      headers: { authorization: "Bearer " + env.AGENTMAIL_API_KEY, "content-type": "application/json" },
+      body: JSON.stringify({ to: CONTACT_INBOX, subject: "Canary: the public chats are degraded", text }),
+    });
+  } catch (e) { /* nothing further we can do from here */ }
+}
+
 export default {
+  async scheduled(event, env, ctx) {
+    ctx.waitUntil(runCanary(env));
+  },
   async fetch(request, env) {
     const url = new URL(request.url);
     if (url.pathname === "/api/chat") return handleChat(request, env);
