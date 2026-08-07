@@ -24,6 +24,10 @@ const OG_BYTES = b64ToBytes(OG_B64);
 
 // ---- limits ----
 const MODEL = "claude-sonnet-5";
+// Fallback provider. The public chat is investor-facing, so a single upstream
+// outage (expired key, exhausted credit, 5xx) must not take it down. If the
+// Anthropic call fails for any reason we retry once on OpenAI before giving up.
+const FALLBACK_MODEL = "gpt-5.5";
 const MAX_INPUT = 2000;
 const MAX_OUTPUT_TOKENS = 512;
 const HISTORY_LIMIT = 24;      // messages of context sent to the model
@@ -192,7 +196,7 @@ async function _handleChat(request, env) {
   if (request.method !== "POST") return json({ error: "method not allowed" }, 405);
   if (!originOk(request)) return json({ error: "forbidden" }, 403);
 
-  if (!env.ANTHROPIC_API_KEY || !env.SUPABASE_URL || !env.SUPABASE_SERVICE_KEY)
+  if ((!env.ANTHROPIC_API_KEY && !env.OPENAI_API_KEY) || !env.SUPABASE_URL || !env.SUPABASE_SERVICE_KEY)
     return json({ error: "chat is not configured" }, 503);
 
   let payload;
@@ -231,26 +235,66 @@ async function _handleChat(request, env) {
 
   // Call the model — sandboxed persona, no tools.
   let reply = "";
-  try {
-    const ar = await fetch("https://api.anthropic.com/v1/messages", {
-      method: "POST",
-      headers: { "x-api-key": env.ANTHROPIC_API_KEY, "anthropic-version": "2023-06-01", "content-type": "application/json" },
-      // thinking disabled: keep the public chat snappy and preserve the full
-      // MAX_OUTPUT_TOKENS budget for the visible reply (Sonnet 5 runs adaptive
-      // thinking by default when the field is omitted, which would eat the budget).
-      body: JSON.stringify({ model: MODEL, max_tokens: MAX_OUTPUT_TOKENS, thinking: { type: "disabled" }, system: SYSTEM_PROMPT, messages }),
-    });
-    if (ar.ok) {
-      const data = await ar.json();
-      reply = (data.content || []).filter((c) => c.type === "text").map((c) => c.text).join("").trim();
-    }
-  } catch (e) { reply = ""; }
+  let usedModel = "";
+  let failNote = "";
+  if (env.ANTHROPIC_API_KEY) {
+    try {
+      const ar = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: { "x-api-key": env.ANTHROPIC_API_KEY, "anthropic-version": "2023-06-01", "content-type": "application/json" },
+        // thinking disabled: keep the public chat snappy and preserve the full
+        // MAX_OUTPUT_TOKENS budget for the visible reply (Sonnet 5 runs adaptive
+        // thinking by default when the field is omitted, which would eat the budget).
+        body: JSON.stringify({ model: MODEL, max_tokens: MAX_OUTPUT_TOKENS, thinking: { type: "disabled" }, system: SYSTEM_PROMPT, messages }),
+      });
+      if (ar.ok) {
+        const data = await ar.json();
+        reply = (data.content || []).filter((c) => c.type === "text").map((c) => c.text).join("").trim();
+        if (reply) usedModel = MODEL;
+      } else {
+        failNote = "anthropic " + ar.status + " " + (await ar.text()).slice(0, 160);
+      }
+    } catch (e) { failNote = "anthropic threw: " + (e && e.message ? e.message : String(e)).slice(0, 160); }
+  } else {
+    failNote = "anthropic key missing";
+  }
+
+  // Anthropic failed — fall back to OpenAI so the public chat stays up.
+  if (!reply && env.OPENAI_API_KEY) {
+    try {
+      const or = await fetch("https://api.openai.com/v1/chat/completions", {
+        method: "POST",
+        headers: { authorization: "Bearer " + env.OPENAI_API_KEY, "content-type": "application/json" },
+        body: JSON.stringify({
+          model: FALLBACK_MODEL,
+          max_completion_tokens: MAX_OUTPUT_TOKENS,
+          reasoning_effort: "low",
+          messages: [{ role: "system", content: SYSTEM_PROMPT }].concat(messages),
+        }),
+      });
+      if (or.ok) {
+        const od = await or.json();
+        reply = ((od.choices && od.choices[0] && od.choices[0].message && od.choices[0].message.content) || "").trim();
+        if (reply) usedModel = FALLBACK_MODEL;
+      } else {
+        failNote += " | openai " + or.status + " " + (await or.text()).slice(0, 160);
+      }
+    } catch (e) { failNote += " | openai threw: " + (e && e.message ? e.message : String(e)).slice(0, 160); }
+  }
+
   if (!reply) reply = "I hit a snag just then — try again in a moment, or reach the team at max@mail.ricricho.com.";
 
-  // Persist the reply.
+  // Persist the reply. When both providers failed, record why in `model` so the
+  // outage is visible in the table instead of being silently swallowed.
   await sb(env, "autonome_public_chats", {
     method: "POST",
-    body: JSON.stringify({ session_id: sid, role: "assistant", content: reply, model: MODEL, ip_hash: hash }),
+    body: JSON.stringify({
+      session_id: sid,
+      role: "assistant",
+      content: reply,
+      model: usedModel || ("FAILED: " + failNote).slice(0, 300),
+      ip_hash: hash,
+    }),
   });
 
   return json({ session_id: sid, reply });

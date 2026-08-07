@@ -62,7 +62,19 @@ cp /tmp/site_final.html deploy/site-current.html
 - **Sandboxed persona.** Calls the Anthropic API directly with a locked-down system prompt
   (public Max: **no tools, no vault, no delegated authority, conversation only**). Structurally
   cannot reach any tool or private system — this is why it is a new minimal endpoint, not a
-  route through the full Max Gateway. Model: `claude-haiku-4-5`.
+  route through the full Max Gateway. Model: `claude-sonnet-5`.
+- **Provider fallback (added 2026-08-07).** If the Anthropic call fails for any reason —
+  non-2xx, network error, missing key — the worker retries the same turn once on OpenAI
+  (`gpt-5.5`, binding `OPENAI_API_KEY`) before showing the "I hit a snag" line. The
+  `autonome_public_chats.model` column records the model that actually answered, and when
+  **both** providers fail it records `FAILED: <upstream status + body snippet>` so an outage is
+  visible in the table instead of being silently swallowed.
+  - Why this exists: between 2026-08-01 and 2026-08-07 the Anthropic account ran out of credit
+    (`400 invalid_request_error: Your credit balance is too low`). The worker caught the error
+    and returned the friendly fallback line, so **every** public chat turn for six days was
+    "I hit a snag" — including Ric's own tests — with no alert anywhere. Raece Richardson
+    reported it by email; nothing in the system had noticed. Triage query:
+    `select model, count(*) from autonome_public_chats where model like 'FAILED:%' group by 1`.
 - **Every conversation is stored** in Max's Supabase (`warp`, project `uswnbpyiepoaceretjjj`)
   in the dedicated table **`autonome_public_chats`** (`session_id`, `role`, `content`, `model`,
   `ip_hash`, `created_at`). The server is the source of truth for history; the client only holds
@@ -107,12 +119,13 @@ bypasses RLS) can read/write; the anon key cannot read them.
 
 ## Worker bindings (secrets) — RE-SUPPLY ON EVERY DEPLOY
 
-A full script PUT **wipes all bindings** unless they are re-included. The worker needs five
+A full script PUT **wipes all bindings** unless they are re-included. The worker needs six
 `secret_text` bindings (values from Max's vault):
 
 | binding | vault secret |
 |---|---|
 | `ANTHROPIC_API_KEY`    | `ANTHROPIC_API_KEY` |
+| `OPENAI_API_KEY`       | `OPENAI_API_KEY` (fallback provider) |
 | `SUPABASE_URL`         | (literal) `https://uswnbpyiepoaceretjjj.supabase.co` |
 | `SUPABASE_SERVICE_KEY` | `SUPABASE_CANON_KEY` |
 | `IP_SALT`              | `AUTONOME_CHAT_IP_SALT` |
